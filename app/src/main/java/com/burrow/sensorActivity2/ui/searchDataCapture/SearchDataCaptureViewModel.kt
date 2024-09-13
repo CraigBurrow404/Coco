@@ -2,7 +2,7 @@ package com.burrow.sensorActivity2.ui.searchDataCapture
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.burrow.sensorActivity2.ui.chooseSensor.SearchDataCaptureUiState
+import com.burrow.sensorActivity2.ui.SelectedSensors.SearchDataCaptureUiState
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

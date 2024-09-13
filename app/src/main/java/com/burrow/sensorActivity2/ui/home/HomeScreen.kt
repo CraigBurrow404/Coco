@@ -67,7 +67,7 @@ fun HomeScreen(
             println("Choose Sensor Selected")
             Text(
                 fontSize = 24.sp,
-                text = stringResource(R.string.choose_sensor))
+                text = stringResource(R.string.capture_data))
         }
         Spacer(modifier = Modifier.height(32.dp))
         Button(

@@ -15,32 +15,36 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.SensorDBViewModel
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.SelectSensorViewModelFactory
 import com.burrow.sensorActivity2.ui.Info.InfoViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
-import com.burrow.sensorActivity2.ui.chooseSensor.ChooseSensorViewModel
-import com.burrow.sensorActivity2.ui.chooseSensor.SelectDataViewModel
+import com.burrow.sensorActivity2.ui.SelectedSensors.ChooseSensorViewModel
+import com.burrow.sensorActivity2.ui.SelectedSensors.SelectDataViewModel
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModelFactory
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
+import com.burrow.sensorActivity2.ui.searchDataCapture.DataCaptureSummary
 import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorApp
 import com.burrow.sensorActivity2.ui.sensorDetails.SensorDetailsViewModel
 import com.burrow.sensorActivity2.ui.theme.SensorAppTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity(), SensorEventListener {
 
     private val mainViewModel by viewModels<MainViewModel>()
     private lateinit var mHomeViewModel: HomeViewModel
     private lateinit var mDataCaptureViewModel: DataCaptureViewModel
-    private lateinit var mSelectDataViewModel : SelectDataViewModel
-    private lateinit var mAnalyseViewModel : AnalyseViewModel
-    private lateinit var mSensorDetailsViewModel : SensorDetailsViewModel
+    private lateinit var mSelectDataViewModel: SelectDataViewModel
+    private lateinit var mAnalyseViewModel: AnalyseViewModel
+    private lateinit var mSensorDetailsViewModel: SensorDetailsViewModel
     private lateinit var mSelectSensorViewModel: ChooseSensorViewModel
     private lateinit var mInfoViewModel: InfoViewModel
-    private lateinit var mSearchDataCaptureViewModel : SearchDataCaptureViewModel
+    private lateinit var mSearchDataCaptureViewModel: SearchDataCaptureViewModel
 
     private val mCaptureDBViewModel: CaptureDBViewModel by viewModels {
         CaptureDBViewModelFactory((application as SensorApplication).captureRepository)
@@ -52,8 +56,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     private lateinit var mSensorManager: SensorManager
     private val mSensorEventListener = this
-    private lateinit var mSensorList : MutableList<Sensor>
-
+    private lateinit var mSensorList: MutableList<Sensor>
+    private var preferredSensorList: MutableList<Sensor> = mutableListOf()
     private val TAG: String = "MyActivity"
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -145,12 +149,28 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mDataCaptureViewModel.accuracyChanged() // this needs an observable flow of data...
     }
 
-    private fun insertSensorList():  MutableList<Sensor> {
+    private fun insertSensorList(): MutableList<Sensor> {
         Log.v(TAG, "MainActivity insertSensorList Called")
         mSensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL)
         mSensorDBViewModel.insertSensorList(mSensorList)
-        //mSelectSensorViewModel.updateUiStateSensorList(mSensorList)
-        return mSensorList
-    }
+        preferredSensorList.clear()
 
+        var index: Int = 0
+
+        while (index < mSensorList.size) {
+            when (mSensorList[index].stringType) {
+                Sensor.STRING_TYPE_ACCELEROMETER
+                   -> preferredSensorList.add(mSensorList[index])
+                Sensor.STRING_TYPE_GYROSCOPE
+                    -> preferredSensorList.add(mSensorList[index])
+                Sensor.STRING_TYPE_MAGNETIC_FIELD
+                    -> preferredSensorList.add(mSensorList[index])
+                Sensor.STRING_TYPE_AMBIENT_TEMPERATURE
+                    -> preferredSensorList.add(mSensorList[index])
+                else -> {}
+            }
+            index++
+        }
+        return preferredSensorList
+    }
 }

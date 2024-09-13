@@ -13,7 +13,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.burrow.sensorActivity2.ui.Dimens.ExtraSmallPadding2
 import com.burrow.sensorActivity2.ui.Dimens.MediumPadding1
-import com.burrow.sensorActivity2.ui.chooseSensor.ChooseSensorCard
+import com.burrow.sensorActivity2.ui.SelectedSensors.ChooseSensorCard
 
 
 @Composable

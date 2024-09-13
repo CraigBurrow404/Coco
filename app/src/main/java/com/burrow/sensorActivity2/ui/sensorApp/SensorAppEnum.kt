@@ -5,7 +5,7 @@ import com.burrow.sensorActivity2.R
 
 enum class SensorAppEnum(@StringRes val title: Int) {
         HomeScreen(title = R.string.home_screen),
-        ChooseSensorScreen(title = R.string.select_sensor),
+        ChooseSensorScreen(title = R.string.preferred_sensors),
         DataCaptureScreen(title = R.string.capture_data),
         AnalyseDataScreen(title = R.string.analyse_data),
         SelectDataScreen(title = R.string.select_data),

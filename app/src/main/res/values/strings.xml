@@ -59,6 +59,8 @@
     <string name="data_capture">Data Capture</string>
     <string name="choose_data_capture_screen">Choose Data Capture\n</string>
     <string name="choose_data_capture">Search</string>
+    <string name="preselected_sensors">Preselected Sensors</string>
+    <string name="preferred_sensors">Preferred Sensors</string>
 
     <plurals name="sensors">
         <item quantity="one">%d sensor</item>

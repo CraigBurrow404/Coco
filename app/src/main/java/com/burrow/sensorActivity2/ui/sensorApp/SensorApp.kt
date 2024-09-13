@@ -24,10 +24,10 @@ import com.burrow.sensorActivity2.ui.Info.InfoScreen
 import com.burrow.sensorActivity2.ui.Info.InfoViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseScreen
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
-import com.burrow.sensorActivity2.ui.chooseSensor.ChooseSensorScreen
-import com.burrow.sensorActivity2.ui.chooseSensor.ChooseSensorViewModel
-import com.burrow.sensorActivity2.ui.chooseSensor.SelectDataScreen
-import com.burrow.sensorActivity2.ui.chooseSensor.SelectDataViewModel
+import com.burrow.sensorActivity2.ui.SelectedSensors.ChooseSensorScreen
+import com.burrow.sensorActivity2.ui.SelectedSensors.ChooseSensorViewModel
+import com.burrow.sensorActivity2.ui.SelectedSensors.SelectDataScreen
+import com.burrow.sensorActivity2.ui.SelectedSensors.SelectDataViewModel
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureScreen
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel

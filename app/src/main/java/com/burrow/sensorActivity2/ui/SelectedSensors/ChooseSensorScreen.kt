@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.chooseSensor
+package com.burrow.sensorActivity2.ui.SelectedSensors
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,14 +43,13 @@ fun ChooseSensorScreen(
     mSensorManager: SensorManager,
 ) {
     val TAG = "MyActivity"
-    Log.v(TAG, "ChooseSensorScreen Started with ${mSensorList.size} Sensors")
+    //Log.v(TAG, "ChooseSensorScreen Started with ${mSensorList.size} Sensors")
 
     val primaryButtonColor = setPrimaryButtonColor()
     val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
-    val color = if (isPressed) Color.Blue else Color.Yellow
 
    Column() {
 
@@ -64,22 +62,7 @@ fun ChooseSensorScreen(
        ) {
 
            items(mSensorList)
-           /*
-           { sensor ->
-               ChooseSensorCard(
-                   sensor = sensor,
-                   modifier = Modifier,
-                   onClick = {
-                       viewModel.rememberSelectedSensor(sensor = sensor)
-                       dataCaptureViewModel.setSelectedSensor(
-                           mSelectedSensorType = sensor.type,
-                           mSelectedSensorStringType = sensor.stringType
-                       )
-                       navController.navigate(route = SensorAppEnum.DataCaptureScreen.name)
-                   }
-               )
-           }
-            */
+
            { sensor ->
                ChooseSensorCard(
                    sensor = sensor,

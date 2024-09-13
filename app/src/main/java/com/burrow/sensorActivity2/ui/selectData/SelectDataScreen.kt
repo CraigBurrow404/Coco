@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.chooseSensor
+package com.burrow.sensorActivity2.ui.SelectedSensors
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
