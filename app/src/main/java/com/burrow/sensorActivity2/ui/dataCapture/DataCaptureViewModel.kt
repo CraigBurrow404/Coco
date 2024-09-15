@@ -1,6 +1,13 @@
 package com.burrow.sensorActivity2.ui.dataCapture
 
 import android.hardware.Sensor
+import android.hardware.Sensor.TYPE_ACCELEROMETER
+import android.hardware.Sensor.TYPE_AMBIENT_TEMPERATURE
+import android.hardware.Sensor.TYPE_GAME_ROTATION_VECTOR
+import android.hardware.Sensor.TYPE_GRAVITY
+import android.hardware.Sensor.TYPE_GYROSCOPE
+import android.hardware.Sensor.TYPE_MAGNETIC_FIELD
+import android.hardware.Sensor.TYPE_ROTATION_VECTOR
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
@@ -18,19 +25,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
-class DataCaptureViewModel() : ViewModel() {
+class DataCaptureViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(DataCaptureUiState())
     val uiState: StateFlow<DataCaptureUiState> = _uiState.asStateFlow()
     private var dataCaptureList: MutableList<DataCaptureUiState> = mutableListOf()
-    val TAG = "MyActivity"
+    val tag = "DataCaptureViewModel()"
+
     fun accuracyChanged() { }
 
     private fun updateUi(
         mCaptureCount: Int,
         timestamp: Long,
-        formattedTimestamp: String,
         mAccelX: Float,
         mAccelY: Float,
         mAccelZ: Float,
@@ -38,13 +46,11 @@ class DataCaptureViewModel() : ViewModel() {
         mDuration: Double,
         mSensorListenerRegistered: Boolean
     ) {
-        //******* Calculate Current Timestamp in correct Format *******//
-
-        Log.v(TAG, "DataCaptureViewModel updateUi called")
+        Log.v(tag, "updateUi called")
 
         val mSensorTimestamp = System.currentTimeMillis()
         val mSensorTimestampDate = Date(mSensorTimestamp)
-        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.sssss a ")
+        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.ss a ", Locale.getDefault())
         val mSensorTimestampDateFormatted = sdf.format(mSensorTimestampDate)
 
         _uiState.update { currentState ->
@@ -55,7 +61,7 @@ class DataCaptureViewModel() : ViewModel() {
                 captureValueX = mAccelX,
                 captureValueY = mAccelY,
                 captureValueZ = mAccelZ,
-                CaptureRateHz = mSampleRate,
+                captureRateHz = mSampleRate,
                 duration = mDuration,
                 mSensorListenerRegistered = mSensorListenerRegistered,
             )
@@ -67,107 +73,88 @@ class DataCaptureViewModel() : ViewModel() {
         mCaptureDBViewModel: CaptureDBViewModel
     ) {
 
-        Log.v(TAG, "DataCaptureViewModel sensorChanged Called")
+        Log.v(tag, "DataCaptureViewModel sensorChanged Called")
 
-        val mSensorName: String = event?.sensor?.stringType!!
-        var mSensorIsWakeUp = event.sensor.isWakeUpSensor
-        var mSensorIsDynamic = event.sensor.isDynamicSensor
-        var mSensorId = event.sensor.id
-        var mSensorFifoMaxEventCount = event.sensor.fifoMaxEventCount
-        var mSensorFifoReservedEventCount = event.sensor.fifoReservedEventCount
-        var mSensorIsAdditionalInfo = event.sensor.isAdditionalInfoSupported
-        var mSensorMaxDelay = event.sensor.maxDelay
-        var mSensorMinDelay = event.sensor.minDelay
-        var mSensorMaxRange = event.sensor.maximumRange
-        var mSensorPower = event.sensor.power
-        var mSensorReportingMode = event.sensor.reportingMode
-        var mSensorResolution = event.sensor.resolution
-        var mSensorStringType = event.sensor.stringType
-        var mSensorVendor = event.sensor.vendor
-        var mSensorVersion = event.sensor.version
-        var mSensorIndices = event.values.indices
-        var mSensorlastIndex = event.values.lastIndex
-        var mSensorAccuracy = event.accuracy.toString()
+        if (uiState.value.captureSensorData) {
+            val mSensorName: String = event?.sensor?.stringType!!
+            val mSensorType: Int? = event.sensor?.type
+            val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
+            val mFirstCapture: Long = uiState.value.firstCapture
+            var mCaptureCount = uiState.value.captureCount
+            val mSensorTimestamp = System.currentTimeMillis()
+            val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
+            val mDurationDouble: Double = mDurationLong.toDouble()
+            val mDurationSec: Double = (mDurationDouble / 1000) // duration is in Nano seconds
+            val mCaptureCountDouble: Double = mCaptureCount.toDouble()
+            val mSampleRate: Double = (mCaptureCountDouble / mDurationSec)
+            val mSampleRateInt: Int = mSampleRate.toInt()
+            val mSensorTimestampDate = Date(mSensorTimestamp)
+            val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.ss a ", Locale.getDefault())
+            val mSensorTimestampDateFormatted = sdf.format(mSensorTimestampDate).toString()
+            val mSensorValueSize = event.values?.size!!
+            val xValue: Float = event.values?.get(0)!!
+            var yValue = 0f
+            var zValue = 0f
 
-        val mSensorType: Int? = event?.sensor?.type
-        val mSelectedSensor = uiState.value.selectedSensor
+            if (mSensorValueSize == 3) {
+                yValue = event.values?.get(1)!!
+                zValue = event.values?.get(2)!!
+            }
 
-        val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
+            // TODO Make this accept multi-picks of Sensors rather than Hardcoded
+            //******* Check if data should be captured *******//
+            when (mSensorType) {
+                TYPE_ACCELEROMETER, TYPE_GYROSCOPE,
+                TYPE_MAGNETIC_FIELD, TYPE_AMBIENT_TEMPERATURE,
+                TYPE_GAME_ROTATION_VECTOR, TYPE_GRAVITY,
+                TYPE_ROTATION_VECTOR -> {
 
-        val mFirstCapture: Long = uiState.value.firstCapture
+                    checkIfSaveFirstCaptureTimestamp(mSensorTimestamp)
 
-        //******** Calculate Duration and Sample Rate ************//
+                    Log.v(tag,"Sensor type $mSensorType captured")
+                    dataCaptureList.add(
+                        DataCaptureUiState(
+                            mFirstCapture,
+                            mSensorName,
+                            mDurationSec,
+                            mSensorTimestamp,
+                            mSensorTimestampDateFormatted,
+                            "",
+                            true,
+                            mCaptureCount,
+                            xValue,
+                            yValue,
+                            zValue
+                        )
+                    )
 
-        var mCaptureCount = uiState.value.captureCount
-        val mSensorTimestamp = System.currentTimeMillis()
-        val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
-        val mDurationDouble: Double = mDurationLong.toDouble()
-        val mDurationSec: Double = (mDurationDouble / 1000) // duration is in Nano seconds
-        val mCaptureCountDouble: Double = mCaptureCount.toDouble()
-        val mSampleRate: Double = (mCaptureCountDouble / mDurationSec)
-        val mSampleRateInt: Int = mSampleRate.toInt()
-        val mSensorTimestampDate = Date(mSensorTimestamp)
-        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.sssss a ")
-        val mSensorTimestampDateFormatted = sdf.format(mSensorTimestampDate)
+                    mCaptureCount++
 
-        //******* Sensors have different value sizes ********//
-        val mSensorValueSize = event.values?.size!!
-        val xValue: Float = event.values?.get(0)!!
-        var yValue: Float = 0f
-        var zValue: Float = 0f
+                    updateUi(
+                        mCaptureCount,
+                        mSensorTimestamp,
+                        xValue,
+                        yValue,
+                        zValue,
+                        mSampleRateInt,
+                        mDurationSec,
+                        mSensorListenerRegistered
+                    )
 
-        if (mSensorValueSize == 3) {
-            yValue = event.values?.get(1)!!
-            zValue = event.values?.get(2)!!
+                    mCaptureDBViewModel.insert(
+                        mSensorName,
+                        xValue,
+                        yValue,
+                        zValue,
+                        mCaptureCount,
+                        uiState.value.firstCapture, // firstCapture becomes the uniqueID
+                        uiState.value.duration
+                    )
+                }
+            }
         }
-
-        //******* Check if data should be captured *******//
-        if (mSensorType == mSelectedSensor //I am not sure this is ever false
-            && uiState.value.captureSensorData
-        ) {
-            checkIfSaveFirstCaptureTimestamp(mSensorTimestamp)
-
-            dataCaptureList.add(
-                DataCaptureUiState(
-                    mFirstCapture,
-                    mSensorName,
-                    mDurationSec,
-                    mSensorTimestamp,
-                    mSensorTimestampDateFormatted,
-                    "",
-                    true,
-                    mCaptureCount,
-                    xValue,
-                    yValue,
-                    zValue
-                )
-            )
-
-            mCaptureCount++
-
-            updateUi(
-                mCaptureCount,
-                mSensorTimestamp,
-                mSensorTimestampDateFormatted,
-                xValue,
-                yValue,
-                zValue,
-                mSampleRateInt,
-                mDurationSec,
-                mSensorListenerRegistered
-            )
-        }
-
-        mCaptureDBViewModel.insert(
-            mSensorName,
-            xValue,
-            yValue,
-            zValue,
-            mCaptureCount,
-            uiState.value.firstCapture, // firstCapture becomes the uniqueID
-            uiState.value.duration
-        )
     }
+
 
     private fun checkIfSaveFirstCaptureTimestamp(timestamp: Long) {
         if (uiState.value.firstCapture == 0L) {
@@ -180,7 +167,7 @@ class DataCaptureViewModel() : ViewModel() {
          }
     }
 
-    fun startCapture(
+    private fun startCapture(
         mSensorManager: SensorManager,
         mSensorEventListener: SensorEventListener
     ) {
@@ -217,8 +204,24 @@ class DataCaptureViewModel() : ViewModel() {
         mSensorManager: SensorManager,
         mSensorEventListener: SensorEventListener
     ) {
-        val mSensor: Sensor? = mSensorManager.getDefaultSensor(uiState.value.selectedSensor)
-        mSensorManager.registerListener(mSensorEventListener, mSensor, 10000)
+        //TODO Tidy this up to set Sensor managers for each Sensor Chosen from the pick list
+        // - Not part of MVP
+
+        //val mSensor: Sensor? = mSensorManager.getDefaultSensor(uiState.value.selectedSensor)
+        val mSensor1: Sensor? = mSensorManager.getDefaultSensor(TYPE_ACCELEROMETER)
+        val mSensor2: Sensor? = mSensorManager.getDefaultSensor(TYPE_GYROSCOPE)
+        val mSensor3: Sensor? = mSensorManager.getDefaultSensor(TYPE_MAGNETIC_FIELD)
+        val mSensor4: Sensor? = mSensorManager.getDefaultSensor(TYPE_AMBIENT_TEMPERATURE)
+        val mSensor5: Sensor? = mSensorManager.getDefaultSensor(TYPE_GRAVITY)
+        val mSensor6: Sensor? = mSensorManager.getDefaultSensor(TYPE_GAME_ROTATION_VECTOR)
+        val mSensor7: Sensor? = mSensorManager.getDefaultSensor(TYPE_ROTATION_VECTOR)
+        mSensorManager.registerListener(mSensorEventListener, mSensor1, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor2, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor3, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor4, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor5, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor6, 5000)
+        mSensorManager.registerListener(mSensorEventListener, mSensor7, 5000)
     }
 
     fun unregisterSensorListener(
@@ -228,7 +231,7 @@ class DataCaptureViewModel() : ViewModel() {
         mSensorManager.unregisterListener(mSensorEventListener)
     }
 
-    fun setSelectedSensor(
+    fun setSelectedSensor(  // Tidies and abbreviates Sensor name for display on screen
         mSelectedSensorType: Int,
         mSelectedSensorStringType: String
     ) {
@@ -238,21 +241,6 @@ class DataCaptureViewModel() : ViewModel() {
                 sensorName = getSensorTypeName(mSelectedSensorStringType)
             )
         }
-    }
-
-     fun convertLongToTime(time: Long): String {
-        val date = Date(time)
-        val format = SimpleDateFormat("yyyy.MM.dd HH:mm:ss.sss")
-        return format.format(date)
-    }
-
-    fun convertDateToLong(date: String): Long {
-        val df = SimpleDateFormat("yyyy.MM.dd HH:mm.sss")
-        return df.parse(date).time
-    }
-
-    fun currentTimeToLong(): Long {
-        return System.currentTimeMillis()
     }
 
     fun clearPrevUIState() {
@@ -269,7 +257,7 @@ class DataCaptureViewModel() : ViewModel() {
                 captureValueY = 0f,
                 captureValueZ = 0f,
                 dataCaptureButtonText = "Start",
-                CaptureRateHz = 0,
+                captureRateHz = 0,
             )
         }
     }
@@ -282,7 +270,7 @@ class DataCaptureViewModel() : ViewModel() {
         mSensorEventListener: SensorEventListener
     ) {
         var mDataCaptureButtonText = uiState.value.dataCaptureButtonText
-        var mAnalyseUIState = AnalyseUIState(0,"",0 )
+        val mAnalyseUIState = AnalyseUIState(0, "", 0)
 
         when (mDataCaptureButtonText) {
 

@@ -1,32 +1,38 @@
 package com.burrow.sensorActivity2.ui.analyse
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.burrow.sensorActivity2.dataInterface.Entity.CaptureEntity
+import com.burrow.sensorActivity2.R
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
-import com.burrow.sensorActivity2.ui.charts.XAxisGraph
-import com.burrow.sensorActivity2.ui.common.setPrimaryButtonColor
+import com.burrow.sensorActivity2.dataInterface.entity.CaptureEntity
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
-import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
-import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureCard
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AnalyseScreen(
     modifier: Modifier = Modifier,
@@ -35,21 +41,16 @@ fun AnalyseScreen(
     navController: NavController
 ) {
 
+// TODO the UIs sole responsibility should be to consume and display UI state.
 
-// TODO the UI's sole responsibility should be to consume and display UI state.
+    val tag = "AnalyseScreen"
+    Log.v(tag, "Screen Started")
 
-    val tag = "MyActivity"
-    Log.v(tag, "Analyse Data Screen Started")
-
-    val mainButtonColor = setPrimaryButtonColor()
-    val secondButtonColor = setSecondaryButtonColor()
-    val tertiaryButtonColor = setTertiaryButtonColor()
+    val secondaryButtonColor = setSecondaryButtonColor()
     val uniqueID = viewModel.getUniqueID()
+    val captureList : State<List<CaptureEntity>> =
+        viewModel.getCaptureList(uniqueID, mCaptureDBViewModel).collectAsState(initial = emptyList())
 
-    val sensorName = viewModel.getSensorName()
-    val captureCount = viewModel.getCaptureCount()
-    var graphDataList : MutableList<CaptureEntity> =
-        viewModel.getGraphDataList(uniqueID, mCaptureDBViewModel)
 
     Column(modifier.background(color = MaterialTheme.colorScheme.background)) {
         Spacer(Modifier.weight(0.1f))
@@ -61,27 +62,58 @@ fun AnalyseScreen(
                 color = MaterialTheme.colorScheme.primary,
             )
         }
-        Row(Modifier.weight(0.6f)) {
-            graphDataList = viewModel.getGraphDataList(uniqueID, mCaptureDBViewModel)
+        Row(Modifier.weight(0.3f)) {
+
             LazyColumn(
                 Modifier
                     .fillMaxSize()
             ) {
-                items(graphDataList.size)
-                { dataListIndex ->
+                itemsIndexed(captureList.value)
+                { _, row ->
+                    val captureEntity: CaptureEntity = row
                     AnalyseDataCard(
-                        modifier = Modifier,
                         onClick = {},
-                        xValue = graphDataList[dataListIndex].captureValueX,
-                        yValue = graphDataList[dataListIndex].captureValueY,
-                        zValue = graphDataList[dataListIndex].captureValueZ
+                        xValue = captureEntity.captureValueX,
+                        yValue = captureEntity.captureValueY,
+                        zValue = captureEntity.captureValueZ,
                     )
                 }
             }
-           // XAxisGraph(modifier.weight(0.3f))
+        // TODO Add more Analysis features as they become apparent
+        //  XAxisGraph(modifier.weight(0.3f))
         }
         Row(Modifier.weight(0.1f)) { }
         Row(Modifier.weight(0.1f)) { }
-        Row(Modifier.weight(0.1f)) { }
+        Row(modifier = Modifier.weight(0.1f).align(Alignment.CenterHorizontally)) {
+            Box(
+                modifier = Modifier,
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxSize(0.9f),
+                    shape = RoundedCornerShape(4.dp),
+                    onClick = {navController.navigate(route = SensorAppEnum.HomeScreen.name) },
+                    colors = secondaryButtonColor
+                ) {
+                    Text(
+                        fontSize = 24.sp,
+                        text = stringResource(R.string.cancel),
+                        style = LocalTextStyle.current.merge(
+                            TextStyle(
+                                lineHeight = 1.5.em,
+                                platformStyle = PlatformTextStyle(
+                                    includeFontPadding = false
+                                ),
+                                lineHeightStyle = LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.None
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.weight(0.1f))
     }
 }

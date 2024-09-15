@@ -1,10 +1,10 @@
-package com.burrow.sensorActivity2.dataInterface.Dao
+package com.burrow.sensorActivity2.dataInterface.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.burrow.sensorActivity2.dataInterface.Entity.SensorEntity
+import com.burrow.sensorActivity2.dataInterface.entity.SensorEntity
 
 @Dao
 interface SensorDao {

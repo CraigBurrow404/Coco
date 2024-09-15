@@ -1,8 +1,5 @@
-package com.burrow.sensorActivity2.ui.SelectedSensors
+package com.burrow.sensorActivity2.ui.selectData
 
 import androidx.lifecycle.ViewModel
 
-class SelectDataViewModel() : ViewModel() {
-
-
-}
+class SelectDataViewModel : ViewModel()

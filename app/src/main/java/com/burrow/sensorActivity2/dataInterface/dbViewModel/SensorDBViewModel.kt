@@ -4,7 +4,7 @@ import android.hardware.Sensor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.burrow.sensorActivity2.dataInterface.Entity.SensorEntity
+import com.burrow.sensorActivity2.dataInterface.entity.SensorEntity
 import com.burrow.sensorActivity2.dataInterface.repository.SensorRepository
 import kotlinx.coroutines.launch
 

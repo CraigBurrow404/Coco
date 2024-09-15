@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.dataInterface.Entity
+package com.burrow.sensorActivity2.dataInterface.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "data_capture_table")
 data class CaptureEntity(
     @PrimaryKey val uid  : Int,
-    @ColumnInfo(name = "unique_id") val UniqueID : Long,
+    @ColumnInfo(name = "unique_id") val uniqueID : Long,
     @ColumnInfo(name = "sensor_name") val sensorName: String,
     @ColumnInfo(name = "duration") val duration: Double,
     @ColumnInfo(name = "sensitivity") val sensitivity: String,

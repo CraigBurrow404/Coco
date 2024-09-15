@@ -13,7 +13,7 @@ data class DataCaptureUiState(
     val captureValueY: Float = 0f,
     val captureValueZ: Float = 0f,
     val dataCaptureButtonText: String = "Start",
-    val CaptureRateHz: Int = 0,
+    val captureRateHz: Int = 0,
     val selectedSensor: Int = 0,
     val mSensorListenerRegistered: Boolean = false,
     val uniqueId: Long = 0

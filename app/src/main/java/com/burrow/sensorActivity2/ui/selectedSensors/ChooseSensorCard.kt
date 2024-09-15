@@ -1,6 +1,7 @@
-package com.burrow.sensorActivity2.ui.SelectedSensors
+package com.burrow.sensorActivity2.ui.selectedSensors
 
 import android.hardware.Sensor
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,18 +12,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.burrow.sensorActivity2.ui.common.getSensorTypeName
-import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
 
 @Composable
@@ -31,25 +26,21 @@ fun ChooseSensorCard(
     sensor: Sensor,
     onClick: () -> Unit) {
 
-    //val TAG = "MyActivity"
-    //Log.v(TAG, "ChooseSensorCard Started")
+    val tag = "MyActivity"
+    Log.v(tag, "")
 
-    val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
-    var selected by remember { mutableStateOf(false) }
-    val color = if (selected) Color.Blue else Color.Yellow
-
     val sensorTypeName = getSensorTypeName(sensor.stringType)
 
     Row(
-        Modifier
+        modifier
             .clickable(onClick = onClick)
             .fillMaxWidth(),
     )
     {
-        Spacer(modifier = Modifier.weight(0.1f)) // Move Button to Horizontal centre
+        Spacer(modifier = modifier.weight(0.1f)) // Move Button to Horizontal centre
         Button(
-            modifier = Modifier
+            modifier = modifier
                 .height(64.dp)
                 .fillMaxWidth(0.8f)
                 .weight(0.8f),
@@ -58,15 +49,14 @@ fun ChooseSensorCard(
             colors = tertiaryButtonColor,
         ) {
             Text(
-                modifier = Modifier.fillMaxSize()
+                modifier = modifier.fillMaxSize()
                     .align(Alignment.CenterVertically),
                 text = sensorTypeName,
                 textAlign = TextAlign.Center,
                 fontSize = 32.sp
             )
         }
-        Spacer(modifier = Modifier.weight(0.1f))
+        Spacer(modifier = modifier.weight(0.1f))
     }
-    Spacer(modifier = Modifier.height(32.dp))
-    //Log.v(TAG, "ChooseSensorCard Ended")
+    Spacer(modifier = modifier.height(32.dp))
 }

@@ -35,7 +35,7 @@ fun ActionButton(
     mainButtonColor : ButtonColors,
     modifier: Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center,) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Button(
             shape = RoundedCornerShape(4.dp),
             onClick = {
@@ -48,7 +48,7 @@ fun ActionButton(
                 )
             },
             colors = mainButtonColor,
-            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.9f)
+            modifier = modifier.fillMaxHeight().fillMaxWidth(0.9f)
 
 
         ) {

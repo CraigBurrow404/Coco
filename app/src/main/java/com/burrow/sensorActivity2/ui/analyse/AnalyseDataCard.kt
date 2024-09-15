@@ -13,25 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.burrow.sensorActivity2.ui.common.getSensorTypeName
-import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
-import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
 
 @Composable
 fun AnalyseDataCard(
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     xValue: Float,
     yValue: Float,
     zValue: Float,) {
 
-    val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
 
     Row(

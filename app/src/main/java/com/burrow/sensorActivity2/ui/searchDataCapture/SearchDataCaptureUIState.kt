@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.SelectedSensors
+package com.burrow.sensorActivity2.ui.searchDataCapture
 
 import android.hardware.Sensor
 

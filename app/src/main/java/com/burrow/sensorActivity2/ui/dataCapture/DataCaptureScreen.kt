@@ -20,6 +20,7 @@ import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.setPrimaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
+import java.util.Locale
 
 @Composable
 fun DataCaptureScreen(
@@ -27,14 +28,15 @@ fun DataCaptureScreen(
     navController: NavController,
     analyseViewModel: AnalyseViewModel,
     mSensorManager: SensorManager,
-    mSensorEventListener: SensorEventListener
+    mSensorEventListener: SensorEventListener,
+    modifier: Modifier
 ) {
 
 
-// TODO the UI's sole responsibility should be to consume and display UI state.
+// TODO the UIs sole responsibility should be to consume and display UI state.
 
-    val TAG = "MyActivity"
-    Log.v(TAG, "DataCaptureScreen Started")
+    val tag = "MyActivity"
+    Log.v(tag, "DataCaptureScreen Started")
 
     val uiState by viewModel.uiState.collectAsState()
     val mCaptureCount = uiState.captureCount
@@ -42,45 +44,45 @@ fun DataCaptureScreen(
     val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
 
-    val mCaptureRateHz = uiState.CaptureRateHz
-    val mDurationSec = String.format("%.2f", uiState.duration)
+    val mCaptureRateHz = uiState.captureRateHz
+    val mDurationSec = String.format(Locale.getDefault(),"%.2f", uiState.duration)
     val mActionButtonText = uiState.dataCaptureButtonText
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = modifier.fillMaxSize()) {
 
-            Spacer(modifier = Modifier.weight(0.1f))
+            Spacer(modifier = modifier.weight(0.15f))
 
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally).weight(0.1f)
+            Row(modifier = modifier.align(Alignment.CenterHorizontally).weight(0.1f)
             ) {
-                Spacer(modifier = Modifier.weight(0.051f))
-                DataCaptureTitle(viewModel, tertiaryButtonColor, uiState,Modifier.weight(0.9f))
-                Spacer(modifier = Modifier.weight(0.05f))
+                Spacer(modifier = modifier.weight(0.051f))
+                DataCaptureTitle(tertiaryButtonColor, modifier.weight(0.9f))
+                Spacer(modifier = modifier.weight(0.05f))
             }
 
-            Row(modifier = Modifier.weight(0.1f)) {
-                Spacer(Modifier.weight(0.05f))
-                CaptureCountTitle(Modifier.weight(.2f))
-                CaptureCountValue(mCaptureCount, Modifier.weight(0.2f))
-                Spacer(Modifier.weight(0.1f))
-                CaptureRateTitle(Modifier.weight(0.2f))
-                CaptureRateValue(mCaptureRateHz, Modifier.weight(0.2f))
-                Spacer(modifier = Modifier.weight(0.05f))
+            Row(modifier = modifier.weight(0.1f)) {
+                Spacer(modifier.weight(0.05f))
+                CaptureCountTitle(modifier.weight(.2f))
+                CaptureCountValue(mCaptureCount, modifier.weight(0.2f))
+                Spacer(modifier.weight(0.1f))
+                CaptureRateTitle(modifier.weight(0.2f))
+                CaptureRateValue(mCaptureRateHz, modifier.weight(0.2f))
+                Spacer(modifier = modifier.weight(0.05f))
             }
 
-            Row(modifier = Modifier.weight(0.1f)) {
-                Spacer(modifier = Modifier.weight(0.05f))
-                CaptureDurationTitle(Modifier.weight(0.15f))
-                CaptureDurationValue(Modifier.weight(0.25f), mDurationSec)
-                Spacer(modifier = Modifier.weight(0.55f))
+            Row(modifier = modifier.weight(0.1f)) {
+                Spacer(modifier = modifier.weight(0.05f))
+                CaptureDurationTitle(modifier.weight(0.15f))
+                CaptureDurationValue(modifier.weight(0.25f), mDurationSec)
+                Spacer(modifier = modifier.weight(0.55f))
             }
 
-            Row(modifier = Modifier.weight(0.3f).align(Alignment.CenterHorizontally)) {
-                Spacer(modifier = Modifier.weight(0.1f))
+            Row(modifier = modifier.weight(0.3f).align(Alignment.CenterHorizontally)) {
+                Spacer(modifier = modifier.weight(0.1f))
                 ActionButton(
                     viewModel,
                     analyseViewModel,
@@ -89,25 +91,25 @@ fun DataCaptureScreen(
                     mSensorEventListener,
                     mActionButtonText,
                     mainButtonColor,
-                    modifier = Modifier.weight(0.8f)
+                    modifier = modifier.weight(0.8f)
                 )
-                Spacer(modifier = Modifier.weight(0.1f))
+                Spacer(modifier = modifier.weight(0.1f))
             }
 
-            Spacer(modifier = Modifier.weight(0.04f))
+            Spacer(modifier = modifier.weight(0.04f))
 
-            Row(modifier = Modifier.weight(0.1f).align(Alignment.CenterHorizontally)) {
+            Row(modifier = modifier.weight(0.1f).align(Alignment.CenterHorizontally)) {
                CancelButton(
-                   modifier = Modifier,
                    viewModel,
                    mSensorManager,
                    mSensorEventListener,
                    navController,
-                   secondaryButtonColor
+                   secondaryButtonColor,
+                   modifier = modifier
                )
             }
 
-            Spacer(modifier = Modifier.weight(0.1f))
+            Spacer(modifier = modifier.weight(0.1f))
         }
     }
 }

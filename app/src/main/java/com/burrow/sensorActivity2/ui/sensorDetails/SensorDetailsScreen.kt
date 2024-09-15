@@ -21,29 +21,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
-import com.burrow.sensorActivity2.ui.common.setPrimaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
-import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
 
 
 @Composable
 fun SensorDetailsScreen(
     viewModel: SensorDetailsViewModel,
-    navController: NavController,
     modifier: Modifier = Modifier
 ) {
 
-// TODO the UI's sole responsibility should be to consume and display UI state.
+// TODO the UIs sole responsibility should be to consume and display UI state.
 
-    val TAG = "MyActivity"
-    Log.v(TAG, "SensorDetailsScreen Started")
-
+    val tag = "SensorDetailsScreen"
+    Log.v(tag, "Started")
     val uiState by viewModel.uiState.collectAsState()
-    val mainButtonColor = setPrimaryButtonColor()
     val secondaryButtonColor = setSecondaryButtonColor()
-    val tertiaryButtonColor = setTertiaryButtonColor()
 
     Column(
         modifier = modifier,
@@ -56,7 +49,7 @@ fun SensorDetailsScreen(
         ) {
             Spacer(modifier = Modifier.height(144.dp))
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.5f))
                 Text(
                     text = viewModel.getSensorTypeTitle(),
@@ -71,7 +64,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorVendorTitle(),
@@ -86,7 +79,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorPowerTitle(),
@@ -101,7 +94,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorVersionTitle(),
@@ -116,7 +109,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorMaxRangeTitle(),
@@ -131,7 +124,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorMinDelayTitle(),
@@ -146,7 +139,7 @@ fun SensorDetailsScreen(
                 )
             }
 
-            Row() {
+            Row {
                 Spacer(modifier = Modifier.weight(0.05f))
                 Text(
                     text = viewModel.getSensorResolutionTitle(),
@@ -163,7 +156,7 @@ fun SensorDetailsScreen(
 
             Row(modifier = Modifier.weight(0.10f)) {
                 Spacer(modifier = Modifier.weight(0.1f))
-                if (uiState.SensorSelected) {
+                if (uiState.sensorSelected) {
                     Text(
                         modifier = Modifier.weight(0.3f),
                         text = "Sensor Selected",
@@ -196,7 +189,7 @@ fun SensorDetailsScreen(
                 ) {
                     Text(
                         fontSize = 24.sp,
-                        text = (uiState.SelectSensorButtonText),
+                        text = (uiState.selectSensorButtonText),
                         textAlign = TextAlign.Center
                     )
                 }

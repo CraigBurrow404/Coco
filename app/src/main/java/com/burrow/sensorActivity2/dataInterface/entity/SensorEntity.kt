@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.dataInterface.Entity
+package com.burrow.sensorActivity2.dataInterface.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,6 +1,5 @@
 package com.burrow.sensorActivity2.ui.dataCapture
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -15,9 +14,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun DataCaptureTitle(
-    viewModel: DataCaptureViewModel,
     tertiaryButtonColor: ButtonColors,
-    uiState: DataCaptureUiState,
     modifier: Modifier
 ) {
     Button(
@@ -28,7 +25,9 @@ fun DataCaptureTitle(
         colors = tertiaryButtonColor,
     ) {
         Text(
-            text = uiState.sensorName,
+            text = "Default Sensors",
+// TODO - Amend this to list user selected sensors from picklist
+//  text = uiState.sensorName,
             color = MaterialTheme.colorScheme.tertiaryContainer,
             fontSize = 32.sp,
             textAlign = TextAlign.Center

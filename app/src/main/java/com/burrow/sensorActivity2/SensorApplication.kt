@@ -2,9 +2,9 @@ package com.burrow.sensorActivity2
 
 import android.app.Application
 import com.burrow.sensorActivity2.dataInterface.repository.CaptureRepository
-import com.burrow.sensorActivity2.dataInterface.Database.CaptureRoomDatabase
+import com.burrow.sensorActivity2.dataInterface.database.CaptureRoomDatabase
 import com.burrow.sensorActivity2.dataInterface.repository.SensorRepository
-import com.burrow.sensorActivity2.dataInterface.Database.SensorRoomDatabase
+import com.burrow.sensorActivity2.dataInterface.database.SensorRoomDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 

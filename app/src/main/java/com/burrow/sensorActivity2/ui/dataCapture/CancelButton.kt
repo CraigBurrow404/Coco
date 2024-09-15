@@ -4,8 +4,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -27,19 +25,19 @@ import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 
 @Composable
 fun CancelButton(
-    modifier : Modifier,
     viewModel: DataCaptureViewModel,
     mSensorManager : SensorManager,
     mSensorEventListener : SensorEventListener,
     navController : NavController,
-    secondaryButtonColor : ButtonColors
+    secondaryButtonColor : ButtonColors,
+    modifier: Modifier
 ) {
     Box(
-        modifier = Modifier,
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Button(
-            modifier = Modifier.fillMaxSize(0.9f),
+            modifier = modifier.fillMaxSize(0.9f),
             shape = RoundedCornerShape(4.dp),
             onClick = {
                 viewModel.stopCapture(
