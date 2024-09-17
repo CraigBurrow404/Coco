@@ -26,7 +26,7 @@ fun ChooseSensorCard(
     sensor: Sensor,
     onClick: () -> Unit) {
 
-    val tag = "MyActivity"
+    val tag = "ChooseSensorCard"
     Log.v(tag, "")
 
     val tertiaryButtonColor = setTertiaryButtonColor()

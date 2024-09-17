@@ -21,7 +21,7 @@ import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
 import com.burrow.sensorActivity2.ui.info.InfoViewModel
-import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureViewModel
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataViewModel
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorApp
@@ -37,9 +37,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private lateinit var mSensorDetailsViewModel: SensorDetailsViewModel
     private lateinit var mSelectSensorViewModel: ChooseSensorViewModel
     private lateinit var mInfoViewModel: InfoViewModel
-    private lateinit var mSearchDataCaptureViewModel: SearchDataCaptureViewModel
+    private lateinit var mDataToAnalyseViewModel: DataToAnalyseViewModel
 
-    private val mCaptureDBViewModel: CaptureDBViewModel by viewModels {
+    private val captureDBViewModel by viewModels {
         CaptureDBViewModelFactory((application as SensorApplication).captureRepository)
     }
 
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private val mSensorEventListener = this
     private lateinit var mSensorList: MutableList<Sensor>
     private var preferredSensorList: MutableList<Sensor> = mutableListOf()
-    private val tag: String = "MyActivity"
+    private val tag: String = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -68,12 +68,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mAnalyseViewModel = ViewModelProvider(this)[AnalyseViewModel::class]
         mSensorDetailsViewModel = ViewModelProvider(this)[SensorDetailsViewModel::class]
         mInfoViewModel = ViewModelProvider(this)[InfoViewModel::class]
-        mSearchDataCaptureViewModel = ViewModelProvider(this)[SearchDataCaptureViewModel::class]
+        mDataToAnalyseViewModel = ViewModelProvider(this)[DataToAnalyseViewModel::class]
 
         //Grab the list of Available Sensors and insert it onto select_sensor_table
         val mSensorList = insertSensorList()
 
-        //mCaptureDBViewModel.deleteALL()
+        //captureDBViewModel.deleteALL()
         Log.v(tag, "MainActivity onCreate setContent")
 
         setContent {
@@ -86,8 +86,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     mSelectSensorViewModel,
                     mAnalyseViewModel,
                     mSensorDetailsViewModel,
-                    mSearchDataCaptureViewModel,
-                    mCaptureDBViewModel,
+                    mDataToAnalyseViewModel,
+                    c,
                     mSensorManager,
                     mSensorEventListener,
                     mSensorList
@@ -129,7 +129,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         Log.v(tag, "MainActivity onSensorChanged Called")
         mDataCaptureViewModel.sensorChanged(
             mSensorEvent,
-            mCaptureDBViewModel
+            c
         )
     }
 

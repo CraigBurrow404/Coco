@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.searchDataCapture
+package com.burrow.sensorActivity2.ui.chooseDataToAnalyse
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -24,8 +24,8 @@ import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 
 @Composable
-fun SearchDataCaptureScreen(
-    viewModel: SearchDataCaptureViewModel,
+fun ChooseDataToAnalyseScreen(
+    viewModel: DataToAnalyseViewModel,
     navController: NavController,
     modifier: Modifier,
     analyseViewModel: AnalyseViewModel,
@@ -34,8 +34,8 @@ fun SearchDataCaptureScreen(
 
 // TODO the UIs sole responsibility should be to consume and display UI state.
 
-    val tag = "MyActivity"
-    Log.v(tag, "SearchDataCaptureScreen Started")
+    val tag = "ChooseDataToAnalyseScreen"
+    Log.v(tag, "Started")
     val secondaryButtonColor = setSecondaryButtonColor()
     val mDataCaptureSummaryList = viewModel.getDataCaptureSummaryList(captureDBViewModel)
 
@@ -50,7 +50,7 @@ fun SearchDataCaptureScreen(
         ) {
             items(mDataCaptureSummaryList.size)
             { dataCaptureSummaryIndex ->
-                SearchDataCaptureCard(
+                DataToAnalyseCard(
                     viewModel = viewModel,
                     modifier = modifier,
                     onClick = {
@@ -62,7 +62,9 @@ fun SearchDataCaptureScreen(
                             sensorName = mDataCaptureSummaryList[dataCaptureSummaryIndex].sensorName,
                             captureCount = mDataCaptureSummaryList[dataCaptureSummaryIndex].captureCount
                         )
-                        Log.v(tag,"mAnalyseUIState $mAnalyseUIState")
+                        Log.v(tag,"uniqueId ${mDataCaptureSummaryList[dataCaptureSummaryIndex].uniqueID}" +
+                            " sensorName ${mDataCaptureSummaryList[dataCaptureSummaryIndex].sensorName}" +
+                            " captureCount ${mDataCaptureSummaryList[dataCaptureSummaryIndex].captureCount}")
                         analyseViewModel.setAnalyseUIState(mAnalyseUIState)
                         navController.navigate(route = SensorAppEnum.AnalyseDataScreen.name)
                     }

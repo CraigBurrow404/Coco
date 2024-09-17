@@ -1,8 +1,8 @@
-package com.burrow.sensorActivity2.ui.searchDataCapture
+package com.burrow.sensorActivity2.ui.chooseDataToAnalyse
 
 import android.hardware.Sensor
 
-data class SearchDataCaptureUiState(
+data class DataToAnalyseUiState(
     var uid: Long = 0,
     var sensorName: String = "",
     var sensorVendor: String = "",

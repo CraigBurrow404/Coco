@@ -28,7 +28,7 @@ fun HomeScreen(
     onExitButtonClicked: () -> Unit,
 ) {
     val tag = "HomeScreen"
-    Log.v(tag, "HomeScreen")
+    Log.v(tag, "Started")
 
     val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
@@ -49,7 +49,6 @@ fun HomeScreen(
             onClick = onChooseSensorButtonClicked,
             colors = tertiaryButtonColor
         ) {
-            Log.v(tag,"Choose Sensor Selected")
             Text(
                 fontSize = 24.sp,
                 text = stringResource(R.string.capture_data))
@@ -63,7 +62,6 @@ fun HomeScreen(
             onClick = onSearchButtonClicked,
             colors = tertiaryButtonColor
         ) {
-            Log.v(tag,"Search Selected")
             Text(fontSize = 24.sp,
                 text = stringResource(R.string.choose_data_capture))
         }
@@ -76,10 +74,10 @@ fun HomeScreen(
             onClick = onExitButtonClicked,
             colors = secondaryButtonColor
         ) {
-            Log.v(tag,"Cancel Selected")
             Text(fontSize = 24.sp,
                 text = stringResource(R.string.exit))
         }
         Spacer(modifier = Modifier.height(64.dp))
+        Log.v(tag, "Ended")
     }
 }

@@ -35,8 +35,8 @@ fun DataCaptureScreen(
 
 // TODO the UIs sole responsibility should be to consume and display UI state.
 
-    val tag = "MyActivity"
-    Log.v(tag, "DataCaptureScreen Started")
+    val tag = "DataCaptureScreen"
+    Log.v(tag, "Started")
 
     val uiState by viewModel.uiState.collectAsState()
     val mCaptureCount = uiState.captureCount

@@ -2,6 +2,8 @@ package com.burrow.sensorActivity2.ui.analyse
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.burrow.sensorActivity2.dataInterface.dao.CaptureDao
+import com.burrow.sensorActivity2.dataInterface.database.CaptureRoomDatabase
 import com.burrow.sensorActivity2.dataInterface.entity.CaptureEntity
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
 import kotlinx.coroutines.flow.Flow
@@ -35,10 +37,11 @@ class AnalyseViewModel : ViewModel() {
     }
 
 
-    fun getCaptureList(mUniqueID: Long, mCaptureDBViewModel: CaptureDBViewModel)
+    fun getCaptureList(mUniqueID: Long)
             : Flow<List<CaptureEntity>> {
         Log.v(tag,"mUniqueID  $mUniqueID")
-        val captureList = mCaptureDBViewModel.getCaptureList(mUniqueID)
+        val captureList = getCaptureList(mUniqueID)
+        var analysisList : CaptureEntity? = null
         return captureList
     }
 }

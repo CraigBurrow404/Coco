@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.searchDataCapture
+package com.burrow.sensorActivity2.ui.chooseDataToAnalyse
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -22,13 +22,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun SearchDataCaptureCard(
-    viewModel: SearchDataCaptureViewModel,
+fun DataToAnalyseCard(
+    viewModel: DataToAnalyseViewModel,
     modifier: Modifier,
     onClick: () -> Unit) {
 
     val tertiaryButtonColor = setTertiaryButtonColor()
-    val tag = "SearchDataCaptureCard"
+    val tag = "DataToAnalyseCard"
 
     val uniqueID : Long = viewModel.uID
     val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a ", Locale.getDefault())

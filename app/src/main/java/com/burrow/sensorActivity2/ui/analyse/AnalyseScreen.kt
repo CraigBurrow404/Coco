@@ -50,6 +50,7 @@ fun AnalyseScreen(
     val uniqueID = viewModel.getUniqueID()
     val captureList : State<List<CaptureEntity>> =
         viewModel.getCaptureList(uniqueID, mCaptureDBViewModel).collectAsState(initial = emptyList())
+    }
 
 
     Column(modifier.background(color = MaterialTheme.colorScheme.background)) {
@@ -75,7 +76,7 @@ fun AnalyseScreen(
                         onClick = {},
                         xValue = captureEntity.captureValueX,
                         yValue = captureEntity.captureValueY,
-                        zValue = captureEntity.captureValueZ,
+                        zValue = captureEntity.captureValueZ
                     )
                 }
             }

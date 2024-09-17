@@ -24,8 +24,8 @@ import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureScreen
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeScreen
 import com.burrow.sensorActivity2.ui.info.InfoScreen
-import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureScreen
-import com.burrow.sensorActivity2.ui.searchDataCapture.SearchDataCaptureViewModel
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseDataToAnalyseScreen
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataScreen
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorScreen
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorViewModel
@@ -39,14 +39,14 @@ fun SensorApp(
     selectSensorViewModel: ChooseSensorViewModel = viewModel(),
     analyseViewModel: AnalyseViewModel = viewModel(),
     sensorDetailsViewModel: SensorDetailsViewModel = viewModel(),
-    searchDataCaptureViewModel: SearchDataCaptureViewModel = viewModel(),
+    dataToAnalyseViewModel: DataToAnalyseViewModel = viewModel(),
     captureDBViewModel: CaptureDBViewModel = viewModel(),
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
     mSensorList: MutableList<Sensor>
 ) {
-    val tag = "MyActivity"
-    Log.v(tag, "SensorApp Started")
+    val tag = "SensorApp"
+    Log.v(tag, "Started")
 
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -58,7 +58,7 @@ fun SensorApp(
 
     Scaffold(
         topBar = {
-            Log.v(tag, "SensorApp SensorAppBar Called")
+            Log.v(tag, "SensorAppBar")
             SensorAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
@@ -67,7 +67,7 @@ fun SensorApp(
             )
         }
     ) {
-        //Log.v(tag, "SensorApp NavHost Started")
+        Log.v(tag, "Started")
 
         NavHost(
             navController = navController,
@@ -75,17 +75,20 @@ fun SensorApp(
             modifier = Modifier
         ) {
             composable(route = SensorAppEnum.HomeScreen.name) {
-                Log.v(tag, "SensorApp HomeScreen called by NavHost")
+                Log.v(tag, "NavHost HomScreen")
                 HomeScreen(
                     onChooseSensorButtonClicked = {
-                        navController.navigate(route = SensorAppEnum.ChooseSensorScreen.name)},
+                        navController.navigate(route = SensorAppEnum.ChooseSensorScreen.name)
+                        Log.v(tag,"onChooseSensorButtonClicked")},
                     onSearchButtonClicked = {
-                        navController.navigate(route = SensorAppEnum.SearchDataCaptureScreen.name)},
-                    onExitButtonClicked = {activity?.finish()}
+                        navController.navigate(route = SensorAppEnum.SearchDataCaptureScreen.name)
+                        Log.v(tag,"onSearchButtonClicked")},
+                    onExitButtonClicked = {activity?.finish()
+                        Log.v(tag,"onSearchButtonClicked")}
                 )
             }
             composable(route = SensorAppEnum.ChooseSensorScreen.name) {
-                Log.v(tag, "SensorApp ChooseSensorScreen called by NavHost")
+                Log.v(tag, "NavHost ChooseSensorScreen")
                 ChooseSensorScreen(
                     viewModel = selectSensorViewModel,
                     navController = navController,
@@ -95,11 +98,11 @@ fun SensorApp(
                 )
             }
             composable(route = SensorAppEnum.SelectDataScreen.name) {
-                Log.v(tag, "SensorApp SelectDataScreen called by NavHost")
+                Log.v(tag, "NavHost SelectDataScreen")
                 SelectDataScreen()
             }
             composable(route = SensorAppEnum.DataCaptureScreen.name) {
-                Log.v(tag, "SensorApp DataCaptureScreen called by NavHost")
+                Log.v(tag, "NavHost DataCaptureScreen")
                 DataCaptureScreen(
                     viewModel = dataCaptureViewModel,
                     navController = navController,
@@ -110,7 +113,7 @@ fun SensorApp(
                 )
             }
             composable(route = SensorAppEnum.AnalyseDataScreen.name) {
-                Log.v(tag, "SensorApp AnalyseScreen called by NavHost")
+                Log.v(tag, "NavHost AnalyseDataScreen")
                 AnalyseScreen(
                     viewModel = analyseViewModel,
                     mCaptureDBViewModel = captureDBViewModel,
@@ -119,21 +122,21 @@ fun SensorApp(
             }
             composable(route = SensorAppEnum.SensorDetailsScreen.name
             ) {
-                Log.v(tag, "SensorApp SelectDetailsScreen called by NavHost")
+                Log.v(tag, "NavHost SensorDetailsScreen")
                 SensorDetailsScreen(
                     viewModel = sensorDetailsViewModel
                 )
             }
             composable(route = SensorAppEnum.InfoScreen.name
             ) {
-                Log.v(tag, "SensorApp InfoScreen called by NavHost")
+                Log.v(tag, "NavHost InfoScreen")
                 InfoScreen()
             }
             composable(route = SensorAppEnum.SearchDataCaptureScreen.name
             ) {
-                Log.v(tag, "SensorApp SearchDataCaptureScreen called by NavHost")
-                SearchDataCaptureScreen(
-                    viewModel = searchDataCaptureViewModel,
+                Log.v(tag, "NavHost SearchDataCaptureScreen")
+                ChooseDataToAnalyseScreen(
+                    viewModel = dataToAnalyseViewModel,
                     navController = navController,
                     analyseViewModel = analyseViewModel,
                     captureDBViewModel = captureDBViewModel,
@@ -142,5 +145,5 @@ fun SensorApp(
             }
         }
     }
-    //Log.v(tag, "SensorApp Ended")
+    Log.v(tag, "Ended")
 }
