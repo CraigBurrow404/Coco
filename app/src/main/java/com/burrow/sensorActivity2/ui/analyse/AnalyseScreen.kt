@@ -1,9 +1,7 @@
 package com.burrow.sensorActivity2.ui.analyse
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +26,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
-import com.burrow.sensorActivity2.dataInterface.entity.CaptureEntity
+import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 
@@ -37,7 +34,6 @@ import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 fun AnalyseScreen(
     modifier: Modifier = Modifier,
     viewModel: AnalyseViewModel,
-    mCaptureDBViewModel : CaptureDBViewModel,
     navController: NavController
 ) {
 
@@ -51,7 +47,6 @@ fun AnalyseScreen(
     val captureList : State<List<CaptureEntity>> =
         viewModel.getCaptureList(uniqueID, mCaptureDBViewModel).collectAsState(initial = emptyList())
     }
-
 
     Column(modifier.background(color = MaterialTheme.colorScheme.background)) {
         Spacer(Modifier.weight(0.1f))

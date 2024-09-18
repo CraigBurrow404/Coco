@@ -40,7 +40,6 @@ fun SensorApp(
     analyseViewModel: AnalyseViewModel = viewModel(),
     sensorDetailsViewModel: SensorDetailsViewModel = viewModel(),
     dataToAnalyseViewModel: DataToAnalyseViewModel = viewModel(),
-    captureDBViewModel: CaptureDBViewModel = viewModel(),
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
     mSensorList: MutableList<Sensor>
@@ -116,7 +115,6 @@ fun SensorApp(
                 Log.v(tag, "NavHost AnalyseDataScreen")
                 AnalyseScreen(
                     viewModel = analyseViewModel,
-                    mCaptureDBViewModel = captureDBViewModel,
                     navController = navController
                 )
             }
@@ -139,7 +137,6 @@ fun SensorApp(
                     viewModel = dataToAnalyseViewModel,
                     navController = navController,
                     analyseViewModel = analyseViewModel,
-                    captureDBViewModel = captureDBViewModel,
                     modifier = Modifier
                 )
             }

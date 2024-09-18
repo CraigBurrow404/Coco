@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.burrow.sensorActivity2.dataInterface.dao.SensorDao
-import com.burrow.sensorActivity2.dataInterface.entity.SensorEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

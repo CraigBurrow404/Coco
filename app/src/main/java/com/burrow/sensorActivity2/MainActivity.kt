@@ -13,10 +13,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModelProvider
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
 import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModelFactory
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.SelectSensorViewModelFactory
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.SensorDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.SelectSensorViewModelFactory
+import com.burrow.sensorActivity2.dataInterface.database.SensorDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
@@ -87,7 +86,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     mAnalyseViewModel,
                     mSensorDetailsViewModel,
                     mDataToAnalyseViewModel,
-                    c,
                     mSensorManager,
                     mSensorEventListener,
                     mSensorList

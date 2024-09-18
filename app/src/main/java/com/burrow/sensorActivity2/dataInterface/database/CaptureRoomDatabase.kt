@@ -10,16 +10,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.burrow.sensorActivity2.dataInterface.dao.CaptureDao
-import com.burrow.sensorActivity2.dataInterface.entity.CaptureEntity
 import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseSummary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-
 @Database(entities = [CaptureEntity::class], version = 7, exportSchema = false)
-abstract class CaptureRoomDatabase : RoomDatabase() {
+abstract class CaptureDatabase : RoomDatabase() {
+    abstract fun captureDao(): CaptureDao
+}
 
+    val tag = "CaptureDatabase"
 
     suspend fun getDataCaptureList(): List<DataToAnalyseSummary> {
         Log.v(tag, "getDataCaptureList()")
@@ -58,16 +59,16 @@ abstract class CaptureRoomDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: CaptureRoomDatabase? = null
+        private var INSTANCE: Captureatabase? = null
 
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
-        ): CaptureRoomDatabase {
+        ): Captureatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    CaptureRoomDatabase::class.java,
+                    Captureatabase::class.java,
                     "data_capture_database"
                 )
                     .fallbackToDestructiveMigration()

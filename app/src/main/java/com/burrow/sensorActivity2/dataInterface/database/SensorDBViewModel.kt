@@ -1,11 +1,9 @@
-package com.burrow.sensorActivity2.dataInterface.dbViewModel
+package com.burrow.sensorActivity2.dataInterface.database
 
 import android.hardware.Sensor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.burrow.sensorActivity2.dataInterface.entity.SensorEntity
-import com.burrow.sensorActivity2.dataInterface.repository.SensorRepository
 import kotlinx.coroutines.launch
 
 class SensorDBViewModel (private val mRepository: SensorRepository) : ViewModel() {
