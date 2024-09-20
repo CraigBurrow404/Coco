@@ -1,7 +1,7 @@
 package com.burrow.sensorActivity2
 
 import android.app.Application
-import com.burrow.sensorActivity2.dataInterface.repository.CaptureRepository
+import com.burrow.sensorActivity2.dataInterface.database.CaptureRepository
 import com.burrow.sensorActivity2.dataInterface.database.CaptureRoomDatabase
 import com.burrow.sensorActivity2.dataInterface.database.SensorRepository
 import com.burrow.sensorActivity2.dataInterface.database.SensorRoomDatabase
@@ -15,7 +15,7 @@ class SensorApplication : Application() {
     // Using by lazy so the database and the repository are only created when they're needed
     // rather than when the application starts
     private val dataCaptureDatabase by lazy { CaptureRoomDatabase.getDatabase(this, applicationScope) }
-    val captureRepository by lazy { CaptureRepository(dataCaptureDatabase.dataCaptureDao()) }
+    val captureRepository by lazy { CaptureRepository(dataCaptureDatabase.captureDao()) }
 
     private val selectSensorDatabase by lazy { SensorRoomDatabase.getDatabase(this, applicationScope) }
     val sensorRepository by lazy { SensorRepository(selectSensorDatabase.selectSensorDao()) }

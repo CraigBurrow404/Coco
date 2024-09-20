@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "select_sensor_table")
 data class SensorEntity(
-    @PrimaryKey var uid: Int,
+    @PrimaryKey (autoGenerate = true) var uid: Int,
     @ColumnInfo(name = "sensor_name") var sensorName: String,
     @ColumnInfo(name = "sensor_vendor") var sensorVendor: String,
     @ColumnInfo(name = "sensor_version") var sensorVersion: Int,

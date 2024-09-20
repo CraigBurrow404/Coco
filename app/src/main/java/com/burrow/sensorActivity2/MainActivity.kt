@@ -12,15 +12,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModelFactory
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModelFactory
 import com.burrow.sensorActivity2.dataInterface.database.SelectSensorViewModelFactory
 import com.burrow.sensorActivity2.dataInterface.database.SensorDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
 import com.burrow.sensorActivity2.ui.info.InfoViewModel
-import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataViewModel
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorApp
@@ -32,13 +34,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private lateinit var mHomeViewModel: HomeViewModel
     private lateinit var mDataCaptureViewModel: DataCaptureViewModel
     private lateinit var mSelectDataViewModel: SelectDataViewModel
-    private lateinit var mAnalyseViewModel: AnalyseViewModel
     private lateinit var mSensorDetailsViewModel: SensorDetailsViewModel
     private lateinit var mSelectSensorViewModel: ChooseSensorViewModel
     private lateinit var mInfoViewModel: InfoViewModel
-    private lateinit var mDataToAnalyseViewModel: DataToAnalyseViewModel
+    private lateinit var mChooseAnalyseViewModel: ChooseAnalyseViewModel
 
-    private val captureDBViewModel by viewModels {
+    private val captureDBViewModel : CaptureDBViewModel by viewModels {
         CaptureDBViewModelFactory((application as SensorApplication).captureRepository)
     }
 
@@ -64,10 +65,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mSelectSensorViewModel = ViewModelProvider(this)[ChooseSensorViewModel::class]
         mDataCaptureViewModel = ViewModelProvider(this)[DataCaptureViewModel::class]
         mSelectDataViewModel = ViewModelProvider(this)[SelectDataViewModel::class]
-        mAnalyseViewModel = ViewModelProvider(this)[AnalyseViewModel::class]
         mSensorDetailsViewModel = ViewModelProvider(this)[SensorDetailsViewModel::class]
         mInfoViewModel = ViewModelProvider(this)[InfoViewModel::class]
-        mDataToAnalyseViewModel = ViewModelProvider(this)[DataToAnalyseViewModel::class]
+        mChooseAnalyseViewModel = ViewModelProvider(this)[ChooseAnalyseViewModel::class]
+        val mAnalyseViewModel: AnalyseViewModel by viewModels { AnalyseViewModel.Factory }
+
+        mDataCaptureViewModel.deleteAll( captureDBViewModel)
+        val mBatchId = mDataCaptureViewModel.getNewBatchId( captureDBViewModel)
+        Log.v(tag, "Batch ID : ${mBatchId}")
 
         //Grab the list of Available Sensors and insert it onto select_sensor_table
         val mSensorList = insertSensorList()
@@ -84,8 +89,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     mDataCaptureViewModel,
                     mSelectSensorViewModel,
                     mAnalyseViewModel,
+                    captureDBViewModel,
                     mSensorDetailsViewModel,
-                    mDataToAnalyseViewModel,
+                    mChooseAnalyseViewModel,
                     mSensorManager,
                     mSensorEventListener,
                     mSensorList
@@ -127,7 +133,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         Log.v(tag, "MainActivity onSensorChanged Called")
         mDataCaptureViewModel.sensorChanged(
             mSensorEvent,
-            c
+            captureDBViewModel
         )
     }
 

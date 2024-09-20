@@ -18,26 +18,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.burrow.sensorActivity2.ui.common.getSensorTypeName
 import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
+import kotlinx.coroutines.flow.StateFlow
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun DataToAnalyseCard(
-    viewModel: DataToAnalyseViewModel,
+fun AnalyseCard(
+    viewModel: ChooseAnalyseViewModel,
     modifier: Modifier,
     onClick: () -> Unit) {
 
     val tertiaryButtonColor = setTertiaryButtonColor()
     val tag = "DataToAnalyseCard"
 
-    val uniqueID : Long = viewModel.uID
-    val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a ", Locale.getDefault())
-    val uniqueIDFormatted = sdf.format(uniqueID)
+    val batchId : Int = viewModel.batchId
+//    val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss a ", Locale.getDefault())
+//    val uniqueIDFormatted = sdf.format(batchId)
 
-    Log.v(tag,"uniqueID $uniqueID, sdf $sdf, uniqueIDFormatted $uniqueIDFormatted")
+//    Log.v(tag,"uniqueID $batchId, sdf $sdf, uniqueIDFormatted $uniqueIDFormatted")
 
-    val sensorName : String = viewModel.sensorName
-    val sensorNameFormatted : String = getSensorTypeName(sensorName)
+//    val sensorName : String = viewModel.sensorName
+//    val sensorNameFormatted : String = getSensorTypeName(sensorName)
 
     Row(
         modifier
@@ -58,7 +59,8 @@ fun DataToAnalyseCard(
             Text(
                 modifier = modifier.fillMaxSize()
                     .align(Alignment.CenterVertically),
-                text = "$uniqueIDFormatted $sensorNameFormatted",
+                text = "$batchId",
+                //text = "$uniqueIDFormatted $sensorNameFormatted",
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
             )

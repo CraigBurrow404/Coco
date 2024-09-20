@@ -14,7 +14,8 @@ import android.hardware.SensorManager
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
 import com.burrow.sensorActivity2.ui.analyse.AnalyseUIState
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.getSensorTypeName
@@ -79,10 +80,10 @@ class DataCaptureViewModel : ViewModel() {
             val mSensorName: String = event?.sensor?.stringType!!
             val mSensorType: Int? = event.sensor?.type
             val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
-            val mFirstCapture: Long = uiState.value.firstCapture
+            val mBatchId: Int = uiState.value.batchId
             var mCaptureCount = uiState.value.captureCount
             val mSensorTimestamp = System.currentTimeMillis()
-            val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
+            val mDurationLong: Long = (mSensorTimestamp - mBatchId)
             val mDurationDouble: Double = mDurationLong.toDouble()
             val mDurationSec: Double = (mDurationDouble / 1000) // duration is in Nano seconds
             val mCaptureCountDouble: Double = mCaptureCount.toDouble()
@@ -109,12 +110,12 @@ class DataCaptureViewModel : ViewModel() {
                 TYPE_GAME_ROTATION_VECTOR, TYPE_GRAVITY,
                 TYPE_ROTATION_VECTOR -> {
 
-                    checkIfSaveFirstCaptureTimestamp(mSensorTimestamp)
+                    checkIfSaveFirstCaptureTimestamp(mBatchId, mSensorTimestamp)
 
                     Log.v(tag,"Sensor type $mSensorType captured")
                     dataCaptureList.add(
                         DataCaptureUiState(
-                            mFirstCapture,
+                            mBatchId,
                             mSensorName,
                             mDurationSec,
                             mSensorTimestamp,
@@ -140,28 +141,31 @@ class DataCaptureViewModel : ViewModel() {
                         mDurationSec,
                         mSensorListenerRegistered
                     )
-
-                    mCaptureDBViewModel.insert(
-                        mSensorName,
-                        xValue,
-                        yValue,
-                        zValue,
-                        mCaptureCount,
-                        uiState.value.firstCapture, // firstCapture becomes the uniqueID
-                        uiState.value.duration
+                    val mCaptureEntity = CaptureEntity(
+                        uid = 0,
+                        batchId = uiState.value.batchId,
+                        timestamp = 0,
+                        sensorName = mSensorName,
+                        duration = uiState.value.duration,
+                        sensitivity = uiState.value.sensitivity,
+                        captureCount = mCaptureCount,
+                        captureValueX = xValue,
+                        captureValueY = yValue,
+                        captureValueZ = zValue
                     )
+                    mCaptureDBViewModel.insert(mCaptureEntity)
                 }
             }
         }
     }
 
 
-    private fun checkIfSaveFirstCaptureTimestamp(timestamp: Long) {
-        if (uiState.value.firstCapture == 0L) {
+    private fun checkIfSaveFirstCaptureTimestamp(batchId: Int, timestamp: Long) {
+        if (uiState.value.batchId == 0) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    firstCapture = timestamp,
-                    uniqueId = timestamp // deliberately duplicated to track into AnalyseData
+                    batchId = batchId,
+                    timestamp = timestamp // deliberately duplicated to track into AnalyseData
                 )
             }
          }
@@ -246,7 +250,6 @@ class DataCaptureViewModel : ViewModel() {
     fun clearPrevUIState() {
         _uiState.update { currentState ->
             currentState.copy(
-                firstCapture = 0,
                 sensorName = "",
                 duration = 0.0,
                 timestamp = 0,
@@ -264,7 +267,6 @@ class DataCaptureViewModel : ViewModel() {
 
     fun handleButtonClick(
         viewModel: DataCaptureViewModel,
-        analyseViewModel: AnalyseViewModel,
         navController: NavController,
         mSensorManager: SensorManager,
         mSensorEventListener: SensorEventListener
@@ -291,7 +293,6 @@ class DataCaptureViewModel : ViewModel() {
                 mAnalyseUIState.uniqueId = uiState.value.uniqueId
                 mAnalyseUIState.sensorName = uiState.value.sensorName
                 mAnalyseUIState.captureCount = uiState.value.captureCount
-                analyseViewModel.setAnalyseUIState(mAnalyseUIState)
                 mDataCaptureButtonText = "Analyse Data"
             }
 
@@ -318,5 +319,13 @@ class DataCaptureViewModel : ViewModel() {
                 dataCaptureButtonText = mDataCaptureButtonText
             )
         }
+    }
+
+    fun deleteAll( mCaptureDBViewModel: CaptureDBViewModel ) {
+        mCaptureDBViewModel.deleteAll()
+    }
+
+    fun getNewBatchId( mCaptureDBViewModel: CaptureDBViewModel) {
+        mCaptureDBViewModel.getNewBatchId()
     }
 }

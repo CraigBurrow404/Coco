@@ -17,15 +17,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseScreen
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureScreen
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeScreen
 import com.burrow.sensorActivity2.ui.info.InfoScreen
-import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseDataToAnalyseScreen
-import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseViewModel
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseScreen
+import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataScreen
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorScreen
 import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorViewModel
@@ -38,8 +38,9 @@ fun SensorApp(
     dataCaptureViewModel: DataCaptureViewModel = viewModel(),
     selectSensorViewModel: ChooseSensorViewModel = viewModel(),
     analyseViewModel: AnalyseViewModel = viewModel(),
+    captureDBViewModel : CaptureDBViewModel = viewModel(),
     sensorDetailsViewModel: SensorDetailsViewModel = viewModel(),
-    dataToAnalyseViewModel: DataToAnalyseViewModel = viewModel(),
+    chooseAnalyseViewModel: ChooseAnalyseViewModel = viewModel(),
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
     mSensorList: MutableList<Sensor>
@@ -133,10 +134,11 @@ fun SensorApp(
             composable(route = SensorAppEnum.SearchDataCaptureScreen.name
             ) {
                 Log.v(tag, "NavHost SearchDataCaptureScreen")
-                ChooseDataToAnalyseScreen(
-                    viewModel = dataToAnalyseViewModel,
+                ChooseAnalyseScreen(
+                    viewModel = chooseAnalyseViewModel,
                     navController = navController,
                     analyseViewModel = analyseViewModel,
+                    captureDBViewModel = captureDBViewModel,
                     modifier = Modifier
                 )
             }

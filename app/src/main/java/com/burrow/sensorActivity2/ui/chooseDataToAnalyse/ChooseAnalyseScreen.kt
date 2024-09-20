@@ -11,21 +11,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
-import com.burrow.sensorActivity2.dataInterface.dbViewModel.CaptureDBViewModel
-import com.burrow.sensorActivity2.ui.analyse.AnalyseUIState
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 
 @Composable
-fun ChooseDataToAnalyseScreen(
-    viewModel: DataToAnalyseViewModel,
+fun ChooseAnalyseScreen(
+    viewModel: com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseViewModel,
     navController: NavController,
     modifier: Modifier,
     analyseViewModel: AnalyseViewModel,
@@ -37,7 +38,7 @@ fun ChooseDataToAnalyseScreen(
     val tag = "ChooseDataToAnalyseScreen"
     Log.v(tag, "Started")
     val secondaryButtonColor = setSecondaryButtonColor()
-    val mDataCaptureSummaryList = viewModel.getDataCaptureSummaryList(captureDBViewModel)
+    val mCaptureSummaryList by captureDBViewModel.getCaptureSummaryList().collectAsState(initial = emptyList())
 
     Column {
 
@@ -48,24 +49,14 @@ fun ChooseDataToAnalyseScreen(
                 .fillMaxWidth()
                 .weight(0.68f)
         ) {
-            items(mDataCaptureSummaryList.size)
-            { dataCaptureSummaryIndex ->
-                DataToAnalyseCard(
+            items(mCaptureSummaryList.size)
+            { Index ->
+                AnalyseCard(
                     viewModel = viewModel,
                     modifier = modifier,
                     onClick = {
-                        viewModel.rememberSelectedDataCapture(
-                            mDataCaptureSummaryList[dataCaptureSummaryIndex])
-                        mDataCaptureSummaryList[dataCaptureSummaryIndex].captureCount
-                        val mAnalyseUIState = AnalyseUIState (
-                            uniqueId = mDataCaptureSummaryList[dataCaptureSummaryIndex].uniqueID,
-                            sensorName = mDataCaptureSummaryList[dataCaptureSummaryIndex].sensorName,
-                            captureCount = mDataCaptureSummaryList[dataCaptureSummaryIndex].captureCount
-                        )
-                        Log.v(tag,"uniqueId ${mDataCaptureSummaryList[dataCaptureSummaryIndex].uniqueID}" +
-                            " sensorName ${mDataCaptureSummaryList[dataCaptureSummaryIndex].sensorName}" +
-                            " captureCount ${mDataCaptureSummaryList[dataCaptureSummaryIndex].captureCount}")
-                        analyseViewModel.setAnalyseUIState(mAnalyseUIState)
+                        viewModel.updateBatchId(mCaptureSummaryList[Index].batchId)
+                        Log.v(tag,"uniqueId ${mCaptureSummaryList[Index].batchId}")
                         navController.navigate(route = SensorAppEnum.AnalyseDataScreen.name)
                     }
                 )

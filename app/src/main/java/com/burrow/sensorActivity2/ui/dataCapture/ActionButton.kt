@@ -41,7 +41,6 @@ fun ActionButton(
             onClick = {
                 viewModel.handleButtonClick(
                     viewModel,
-                    analyseViewModel,
                     navController,
                     mSensorManager,
                     mSensorEventListener
