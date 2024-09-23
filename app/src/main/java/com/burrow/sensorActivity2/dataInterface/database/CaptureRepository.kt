@@ -22,8 +22,8 @@ class CaptureRepository (private val captureDao: CaptureDao) {
     }
 
     @WorkerThread
-    fun getNewBatchId(): Any {
-        var newBatchId: Flow<Int> = captureDao.getNewBatchId()
+    fun getNewBatchId(): Int {
+        val newBatchId: Int = captureDao.getNewBatchId()
         return newBatchId
     }
 
