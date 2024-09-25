@@ -12,19 +12,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModelFactory
 import com.burrow.sensorActivity2.dataInterface.database.SelectSensorViewModelFactory
 import com.burrow.sensorActivity2.dataInterface.database.SensorDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
-import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseViewModel
+import com.burrow.sensorActivity2.ui.captureHistory.CaptureHistoryViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
 import com.burrow.sensorActivity2.ui.info.InfoViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataViewModel
-import com.burrow.sensorActivity2.ui.selectedSensors.ChooseSensorViewModel
+import com.burrow.sensorActivity2.ui.chooseSensors.ChooseSensorViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorApp
 import com.burrow.sensorActivity2.ui.sensorDetails.SensorDetailsViewModel
 import com.burrow.sensorActivity2.ui.theme.SensorAppTheme
@@ -37,7 +36,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private lateinit var mSensorDetailsViewModel: SensorDetailsViewModel
     private lateinit var mSelectSensorViewModel: ChooseSensorViewModel
     private lateinit var mInfoViewModel: InfoViewModel
-    private lateinit var mChooseAnalyseViewModel: ChooseAnalyseViewModel
+    private lateinit var mCaptureHistoryViewModel: CaptureHistoryViewModel
 
     private val captureDBViewModel : CaptureDBViewModel by viewModels {
         CaptureDBViewModelFactory((application as SensorApplication).captureRepository)
@@ -67,18 +66,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mSelectDataViewModel = ViewModelProvider(this)[SelectDataViewModel::class]
         mSensorDetailsViewModel = ViewModelProvider(this)[SensorDetailsViewModel::class]
         mInfoViewModel = ViewModelProvider(this)[InfoViewModel::class]
-        mChooseAnalyseViewModel = ViewModelProvider(this)[ChooseAnalyseViewModel::class]
+        mCaptureHistoryViewModel = ViewModelProvider(this)[CaptureHistoryViewModel::class]
         val mAnalyseViewModel: AnalyseViewModel by viewModels { AnalyseViewModel.Factory }
-
-        mDataCaptureViewModel.deleteAll( captureDBViewModel)
-        val mBatchId = mDataCaptureViewModel.getNewBatchId( captureDBViewModel)
-        Log.v(tag, "Batch ID : ${mBatchId}")
 
         //Grab the list of Available Sensors and insert it onto select_sensor_table
         val mSensorList = insertSensorList()
-
-        //captureDBViewModel.deleteALL()
-        Log.v(tag, "MainActivity onCreate setContent")
 
         setContent {
             SensorAppTheme(
@@ -91,7 +83,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     mAnalyseViewModel,
                     captureDBViewModel,
                     mSensorDetailsViewModel,
-                    mChooseAnalyseViewModel,
+                    mCaptureHistoryViewModel,
                     mSensorManager,
                     mSensorEventListener,
                     mSensorList
@@ -99,7 +91,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             }
         }
 
-        Log.v(tag, "MainActivity onCreate Ended")
     }
 
     override fun onPause() {
@@ -107,30 +98,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         // UI can be updated
         // do not use it to save data, make network calls, or execute DB transactions
         super.onPause()
-        Log.v(tag, "MainActivity onPause Called")
         mDataCaptureViewModel.unregisterSensorListener(mSensorManager, mSensorEventListener)
     } // End of onPause()
 
-    override fun onStop() {
-        // Activity is no longer visible
-        super.onStop()
-        Log.v(tag,"MainActivity onStop Called")
-    } // End of onStop()
-
-    override fun onRestart() {
-        // Activity moves from stopped to restarted - restores the state of the activity
-        super.onRestart()
-        Log.v(tag, "MainActivity onStop Called")
-    } // End of onRestart()
-
-    override fun onDestroy() {
-        // ensures release of all activity resources and the processes containing them are destroyed
-        Log.v(tag, "MainActivity onDestroy Called")
-        super.onDestroy()
-    } // End of onDestroy()
-
     override fun onSensorChanged(mSensorEvent: SensorEvent?) {
-        Log.v(tag, "MainActivity onSensorChanged Called")
         mDataCaptureViewModel.sensorChanged(
             mSensorEvent,
             captureDBViewModel
@@ -138,12 +109,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(mSensor: Sensor?, mSensorAccuracyValue: Int) {
-        Log.v(tag, "MainActivity onAccuracyChanged Called")
         mDataCaptureViewModel.accuracyChanged() // this needs an observable flow of data...
     }
 
     private fun insertSensorList(): MutableList<Sensor> {
-        Log.v(tag, "MainActivity insertSensorList Called")
         mSensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL)
         mSensorDBViewModel.insertSensorList(mSensorList)
         preferredSensorList.clear()

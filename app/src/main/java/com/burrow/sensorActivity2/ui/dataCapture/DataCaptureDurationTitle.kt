@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CaptureDurationTitle( modifier: Modifier ) {
+fun DataCaptureDurationTitle(modifier: Modifier ) {
     Box(modifier = Modifier) {
         Text(
             modifier = modifier,

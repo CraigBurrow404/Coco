@@ -31,6 +31,7 @@ import com.burrow.sensorActivity2.R
 import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
+import java.sql.Timestamp
 
 @Composable
 fun AnalyseScreen(
@@ -47,10 +48,10 @@ fun AnalyseScreen(
     val secondaryButtonColor = setSecondaryButtonColor()
     val uniqueID = viewModel.getUniqueID()
     val captureList : State<List<CaptureEntity>> =
-        viewModel.getCaptureList(uniqueID).collectAsState(initial = emptyList())
+        viewModel.getCaptureData(uniqueID).collectAsState(initial = emptyList())
 
     Column(modifier.background(color = MaterialTheme.colorScheme.background)) {
-        Spacer(Modifier.weight(0.1f))
+        Spacer(Modifier.weight(0.15f))
         Row(Modifier.weight(0.1f)) {
             Text(
                 modifier = Modifier.weight(0.1f),
@@ -70,6 +71,8 @@ fun AnalyseScreen(
                     val captureEntity: CaptureEntity = row
                     AnalyseDataCard(
                         onClick = {},
+                        batchId = captureEntity.batchId,
+                        firstCapture = Timestamp(captureEntity.firstCapture).toString(),
                         xValue = captureEntity.captureValueX,
                         yValue = captureEntity.captureValueY,
                         zValue = captureEntity.captureValueZ

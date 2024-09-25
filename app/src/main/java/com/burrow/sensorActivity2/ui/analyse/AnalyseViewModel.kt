@@ -25,8 +25,8 @@ class AnalyseViewModel(
     private val uiState: StateFlow<AnalyseUIState> = _uiState.asStateFlow()
     private val tag: String = "AnalyseViewModel"
 
-    fun getCaptureList(mUniqueID: Long)
-            : Flow<List<CaptureEntity>> = captureRepository.getCaptureList(mUniqueID)
+    fun getCaptureData(mUniqueID: Long)
+            : Flow<List<CaptureEntity>> = captureRepository.getCaptureData(mUniqueID)
 
     fun getUniqueID(): Long {
 //        return uiState.value.uniqueId

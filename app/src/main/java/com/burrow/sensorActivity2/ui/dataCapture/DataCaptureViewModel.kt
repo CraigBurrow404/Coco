@@ -15,30 +15,26 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
-import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
+import com.burrow.sensorActivity2.dataInterface.database.CaptureData
 import com.burrow.sensorActivity2.ui.analyse.AnalyseUIState
-import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.getSensorTypeName
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class DataCaptureViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(DataCaptureUiState())
     val uiState: StateFlow<DataCaptureUiState> = _uiState.asStateFlow()
     private var dataCaptureList: MutableList<DataCaptureUiState> = mutableListOf()
-    val tag = "DataCaptureViewModel()"
 
     fun accuracyChanged() { }
 
     private fun updateUi(
         mCaptureCount: Int,
+        mFirstCapture: Long,
         timestamp: Long,
         mAccelX: Float,
         mAccelY: Float,
@@ -47,18 +43,11 @@ class DataCaptureViewModel : ViewModel() {
         mDuration: Double,
         mSensorListenerRegistered: Boolean
     ) {
-        Log.v(tag, "updateUi called")
-
-        val mSensorTimestamp = System.currentTimeMillis()
-        val mSensorTimestampDate = Date(mSensorTimestamp)
-        val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.ss a ", Locale.getDefault())
-        val mSensorTimestampDateFormatted = sdf.format(mSensorTimestampDate)
-
         _uiState.update { currentState ->
             currentState.copy(
                 captureCount = mCaptureCount,
+                firstCapture = mFirstCapture,
                 timestamp = timestamp,
-                formattedTimestamp =  mSensorTimestampDateFormatted,
                 captureValueX = mAccelX,
                 captureValueY = mAccelY,
                 captureValueZ = mAccelZ,
@@ -73,25 +62,27 @@ class DataCaptureViewModel : ViewModel() {
         event: SensorEvent?,
         mCaptureDBViewModel: CaptureDBViewModel
     ) {
-
-        Log.v(tag, "DataCaptureViewModel sensorChanged Called")
-
         if (uiState.value.captureSensorData) {
+
+            var mFirstCapture : Long = uiState.value.firstCapture
+
+            if (mFirstCapture == 0L) {
+                // Set the FirstCapture on the first Pass to teh current timestamp
+                mFirstCapture = System.currentTimeMillis()
+            }
+
             val mSensorName: String = event?.sensor?.stringType!!
             val mSensorType: Int? = event.sensor?.type
             val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
             val mBatchId: Int = uiState.value.batchId
             var mCaptureCount = uiState.value.captureCount
             val mSensorTimestamp = System.currentTimeMillis()
-            val mDurationLong: Long = (mSensorTimestamp - mBatchId)
+            val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
             val mDurationDouble: Double = mDurationLong.toDouble()
             val mDurationSec: Double = (mDurationDouble / 1000) // duration is in Nano seconds
             val mCaptureCountDouble: Double = mCaptureCount.toDouble()
             val mSampleRate: Double = (mCaptureCountDouble / mDurationSec)
             val mSampleRateInt: Int = mSampleRate.toInt()
-            val mSensorTimestampDate = Date(mSensorTimestamp)
-            val sdf = SimpleDateFormat("dd/MM/yy hh:mm:ss.ss a ", Locale.getDefault())
-            val mSensorTimestampDateFormatted = sdf.format(mSensorTimestampDate).toString()
             val mSensorValueSize = event.values?.size!!
             val xValue: Float = event.values?.get(0)!!
             var yValue = 0f
@@ -102,7 +93,6 @@ class DataCaptureViewModel : ViewModel() {
                 zValue = event.values?.get(2)!!
             }
 
-            // TODO Make this accept multi-picks of Sensors rather than Hardcoded
             //******* Check if data should be captured *******//
             when (mSensorType) {
                 TYPE_ACCELEROMETER, TYPE_GYROSCOPE,
@@ -112,14 +102,13 @@ class DataCaptureViewModel : ViewModel() {
 
                     checkIfSaveFirstCaptureTimestamp(mBatchId, mSensorTimestamp)
 
-                    Log.v(tag,"Sensor type $mSensorType captured")
                     dataCaptureList.add(
                         DataCaptureUiState(
                             mBatchId,
+                            mFirstCapture,
                             mSensorName,
                             mDurationSec,
                             mSensorTimestamp,
-                            mSensorTimestampDateFormatted,
                             "",
                             true,
                             mCaptureCount,
@@ -133,6 +122,7 @@ class DataCaptureViewModel : ViewModel() {
 
                     updateUi(
                         mCaptureCount,
+                        mFirstCapture,
                         mSensorTimestamp,
                         xValue,
                         yValue,
@@ -141,10 +131,10 @@ class DataCaptureViewModel : ViewModel() {
                         mDurationSec,
                         mSensorListenerRegistered
                     )
-                    val mCaptureEntity = CaptureEntity(
-                        uid = 0,
+                    val mCaptureData = CaptureData(
                         batchId = uiState.value.batchId,
-                        timestamp = 0,
+                        firstCapture = uiState.value.firstCapture,
+                        timestamp = uiState.value.timestamp,
                         sensorName = mSensorName,
                         duration = uiState.value.duration,
                         sensitivity = uiState.value.sensitivity,
@@ -153,7 +143,7 @@ class DataCaptureViewModel : ViewModel() {
                         captureValueY = yValue,
                         captureValueZ = zValue
                     )
-                    mCaptureDBViewModel.insert(mCaptureEntity)
+                    mCaptureDBViewModel.insert(mCaptureData)
                 }
             }
         }
@@ -173,14 +163,18 @@ class DataCaptureViewModel : ViewModel() {
 
     private fun startCapture(
         mSensorManager: SensorManager,
-        mSensorEventListener: SensorEventListener
+        mSensorEventListener: SensorEventListener,
+        mCaptureDBViewModel: CaptureDBViewModel
     ) {
+        val mBatchId = mCaptureDBViewModel.getNewBatchId()
+        Log.v("BatchId", "$mBatchId")
         registerSensorListener(
             mSensorManager,
             mSensorEventListener
         )
         _uiState.update { currentState ->
             currentState.copy(
+                batchId = mBatchId,
                 captureSensorData = true,
                 mSensorListenerRegistered = true
             )
@@ -267,6 +261,7 @@ class DataCaptureViewModel : ViewModel() {
 
     fun handleButtonClick(
         viewModel: DataCaptureViewModel,
+        mCaptureDBViewModel :CaptureDBViewModel,
         navController: NavController,
         mSensorManager: SensorManager,
         mSensorEventListener: SensorEventListener
@@ -279,7 +274,8 @@ class DataCaptureViewModel : ViewModel() {
             "Start" -> {
                 viewModel.startCapture(
                     mSensorManager,
-                    mSensorEventListener
+                    mSensorEventListener,
+                    mCaptureDBViewModel
                 )
                 mDataCaptureButtonText = "Stop"
 

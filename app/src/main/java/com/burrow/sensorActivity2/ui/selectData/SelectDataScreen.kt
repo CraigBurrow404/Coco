@@ -20,7 +20,7 @@ fun SelectDataScreen() {
 
 // TODO the UIs sole responsibility should be to consume and display UI state.
 
-    val tag = "SelectDataScreeny"
+    val tag = "SelectDataScreen"
     Log.v(tag, "Started")
 
     Column(

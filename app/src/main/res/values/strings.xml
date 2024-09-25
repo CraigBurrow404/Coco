@@ -61,6 +61,7 @@
     <string name="choose_data_capture">Search</string>
     <string name="preselected_sensors">Preselected Sensors</string>
     <string name="preferred_sensors">Preferred Sensors</string>
+    <string name="capture_history">Capture History</string>
 
     <plurals name="sensors">
         <item quantity="one">%d sensor</item>

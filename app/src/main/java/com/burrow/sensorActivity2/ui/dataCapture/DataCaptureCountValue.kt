@@ -14,13 +14,12 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CaptureDurationValue(modifier: Modifier, mDurationSec : String) {
+fun DataCaptureCountValue(mCaptureCount: Int, modifier: Modifier ) {
     Box( modifier = modifier, contentAlignment = Alignment.CenterEnd ) {
         Text(
-            text = mDurationSec,
-            textAlign = TextAlign.Center,
             modifier = modifier,
             fontSize = 32.sp,
+            text = "$mCaptureCount",
             style = LocalTextStyle.current.merge(
                 TextStyle(
                     lineHeight = 1.5.em,
@@ -30,10 +29,10 @@ fun CaptureDurationValue(modifier: Modifier, mDurationSec : String) {
                     lineHeightStyle = LineHeightStyle(
                         alignment = LineHeightStyle.Alignment.Center,
                         trim = LineHeightStyle.Trim.None
-                    )
+                    ),
+                    textAlign = TextAlign.End
                 )
             )
         )
     }
-
 }

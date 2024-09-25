@@ -1,41 +1,40 @@
 package com.burrow.sensorActivity2.dataInterface.database
 
 import androidx.room.Dao
+import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.burrow.sensorActivity2.ui.chooseDataToAnalyse.DataToAnalyseSummary
 import kotlinx.coroutines.flow.Flow
+
 
 @Dao
 interface CaptureDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(captureEntity: CaptureEntity)
+    @Insert(entity = CaptureEntity::class,onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(captureData: CaptureData)
 
     @Query("DELETE FROM data_capture_table")
     suspend fun deleteAll()
 
-    @Query("SELECT DISTINCT batch_id as uniqueID , sensor_name as sensorName, 0 AS captureCount FROM data_capture_table")
-    fun getDataCaptureList() : Flow<List<DataToAnalyseSummary>>
+    @Query("SELECT * FROM data_capture_table WHERE batchId = :batchId")
+    fun getCaptureData(batchId : Long): Flow<List<CaptureEntity>>
 
-    @Query("SELECT * FROM data_capture_table WHERE batch_id = :batchId")
-    fun getCapture(batchId : Long): Flow<List<CaptureEntity>>
-
-    @Query("SELECT DISTINCT uid," +
-            "batch_id," +
+    @Query("SELECT DISTINCT 0 as uid," +
+            "batchId," +
+            "firstCapture," +
             "0 as timestamp," +
-            "sensor_name," +
+            "'' as sensorName," +
             "0.0 as duration," +
             "'' as sensitivity," +
-            "0 as capture_count," +
-            "0.0 as capture_valueX," +
-            "0.0 as capture_valueY," +
-            "0.0 as capture_valueZ" +
+            "0 as captureCount," +
+            "0.0 as captureValueX," +
+            "0.0 as captureValueY," +
+            "0.0 as captureValueZ" +
             " FROM data_capture_table")
-    fun getCaptureSummaryList(): Flow<List<CaptureEntity>>
+    fun getCaptureList(): Flow<List<CaptureEntity>>
 
-    @Query("Select Max(batch_id) from data_capture_table")
+    @Query("Select Max(batchId)  + 1 from data_capture_table")
     fun getNewBatchId(): Int
 
 }

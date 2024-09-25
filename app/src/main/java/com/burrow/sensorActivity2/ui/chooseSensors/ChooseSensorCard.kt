@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.selectedSensors
+package com.burrow.sensorActivity2.ui.chooseSensors
 
 import android.hardware.Sensor
 import android.util.Log
@@ -25,9 +25,6 @@ fun ChooseSensorCard(
     modifier: Modifier = Modifier,
     sensor: Sensor,
     onClick: () -> Unit) {
-
-    val tag = "ChooseSensorCard"
-    Log.v(tag, "")
 
     val tertiaryButtonColor = setTertiaryButtonColor()
     val sensorTypeName = getSensorTypeName(sensor.stringType)

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CaptureRateValue( mCaptureRateHz: Int, modifier: Modifier ) {
+fun DataCaptureRateValue(mCaptureRateHz: Int, modifier: Modifier ) {
     Box( modifier = modifier, contentAlignment = Alignment.CenterEnd ) {
         Text(
             modifier = modifier,

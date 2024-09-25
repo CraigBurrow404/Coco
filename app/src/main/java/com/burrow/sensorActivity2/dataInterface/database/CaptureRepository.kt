@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 class CaptureRepository (private val captureDao: CaptureDao) {
 
     @WorkerThread
-    fun getCaptureList(batchId: Long): Flow<List<CaptureEntity>> {
-        val captureList: Flow<List<CaptureEntity>> = captureDao.getCapture(batchId)
+    fun getCaptureData(batchId: Long): Flow<List<CaptureEntity>> {
+        val captureList: Flow<List<CaptureEntity>> = captureDao.getCaptureData(batchId)
         return captureList
     }
 
     @WorkerThread
-    fun getCaptureSummaryList(): Flow<List<CaptureEntity>> {
-        val captureSummaryList: Flow<List<CaptureEntity>> = captureDao.getCaptureSummaryList()
-        return captureSummaryList
+    fun getCaptureList(): Flow<List<CaptureEntity>> {
+        val captureList: Flow<List<CaptureEntity>> = captureDao.getCaptureList()
+        return captureList
     }
 
     @WorkerThread
@@ -29,10 +29,10 @@ class CaptureRepository (private val captureDao: CaptureDao) {
 
     @WorkerThread
     suspend fun insertFirstRow() {
-        val captureEntity : CaptureEntity =
-            CaptureEntity(
-                uid = 0,
+        val captureData : CaptureData =
+            CaptureData(
                 batchId = 0,
+                firstCapture = 0,
                 timestamp = 0,
                 captureCount = 0,
                 captureValueY = 0f,
@@ -42,15 +42,15 @@ class CaptureRepository (private val captureDao: CaptureDao) {
                 sensitivity = "Dummy First Row",
                 sensorName = "Dummy First Row"
             )
-        captureDao.insert(captureEntity)
+        captureDao.insert(captureData)
     }
 
     @Delete
     suspend fun deleteAll() = captureDao.deleteAll()
 
     @WorkerThread
-    suspend fun insert(captureEntity: CaptureEntity) {
-        captureDao.insert(captureEntity)
+    suspend fun insert(captureData: CaptureData) {
+        captureDao.insert(captureData)
     }
 
 }

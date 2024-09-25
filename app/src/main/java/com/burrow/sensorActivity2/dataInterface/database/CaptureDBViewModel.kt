@@ -1,30 +1,32 @@
 package com.burrow.sensorActivity2.dataInterface.database
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.burrow.sensorActivity2.dataInterface.database.CaptureRoomDatabase.Companion.getDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class CaptureDBViewModel(private val mRepository: CaptureRepository) : ViewModel() {
     private val tag: String = "CaptureDBViewModel"
 
-    fun insert(mCaptureEntity: CaptureEntity) = viewModelScope.launch {
-            mRepository.insert(mCaptureEntity)
+    fun insert(mCaptureData: CaptureData) = viewModelScope.launch {
+            mRepository.insert(mCaptureData)
         }
 
-    fun getCaptureList(mUniqueID : Long): Flow<List<CaptureEntity>> {
-        val mCaptureList = mRepository.getCaptureList(mUniqueID)
+    fun getCaptureData(mUniqueID : Long): Flow<List<CaptureEntity>> {
+        val mCaptureList = mRepository.getCaptureData(mUniqueID)
         return mCaptureList
     }
 
-    fun getCaptureSummaryList(): Flow<List<CaptureEntity>> {
-        val mCaptureSummaryList : Flow<List<CaptureEntity>> = mRepository.getCaptureSummaryList()
+    fun getCaptureList(): Flow<List<CaptureEntity>> {
+        val mCaptureSummaryList : Flow<List<CaptureEntity>> = mRepository.getCaptureList()
         return mCaptureSummaryList
     }
 
-    fun getNewBatchId(): Any {
-        val mBatchId : Flow<Int> = mRepository.getNewBatchId()
+    fun getNewBatchId(): Int {
+        val mBatchId : Int = mRepository.getNewBatchId()
         return mBatchId
     }
 

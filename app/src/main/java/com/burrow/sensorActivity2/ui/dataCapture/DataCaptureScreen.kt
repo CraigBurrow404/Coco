@@ -2,7 +2,6 @@ package com.burrow.sensorActivity2.ui.dataCapture
 
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.setPrimaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
@@ -25,27 +25,20 @@ import java.util.Locale
 @Composable
 fun DataCaptureScreen(
     viewModel: DataCaptureViewModel,
+    mCaptureDBViewModel: CaptureDBViewModel,
     navController: NavController,
-    analyseViewModel: AnalyseViewModel,
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
     modifier: Modifier
 ) {
-
-
-// TODO the UIs sole responsibility should be to consume and display UI state.
-
-    val tag = "DataCaptureScreen"
-    Log.v(tag, "Started")
 
     val uiState by viewModel.uiState.collectAsState()
     val mCaptureCount = uiState.captureCount
     val mainButtonColor = setPrimaryButtonColor()
     val secondaryButtonColor = setSecondaryButtonColor()
     val tertiaryButtonColor = setTertiaryButtonColor()
-
     val mCaptureRateHz = uiState.captureRateHz
-    val mDurationSec = String.format(Locale.getDefault(),"%.2f", uiState.duration)
+    val mDurationSec = String.format(Locale.getDefault(), "%.2f", uiState.duration)
     val mActionButtonText = uiState.dataCaptureButtonText
 
     Box(
@@ -57,7 +50,10 @@ fun DataCaptureScreen(
 
             Spacer(modifier = modifier.weight(0.15f))
 
-            Row(modifier = modifier.align(Alignment.CenterHorizontally).weight(0.1f)
+            Row(
+                modifier = modifier
+                    .align(Alignment.CenterHorizontally)
+                    .weight(0.1f)
             ) {
                 Spacer(modifier = modifier.weight(0.051f))
                 DataCaptureTitle(tertiaryButtonColor, modifier.weight(0.9f))
@@ -66,26 +62,28 @@ fun DataCaptureScreen(
 
             Row(modifier = modifier.weight(0.1f)) {
                 Spacer(modifier.weight(0.05f))
-                CaptureCountTitle(modifier.weight(.2f))
-                CaptureCountValue(mCaptureCount, modifier.weight(0.2f))
+                DataCaptureCountTitle(modifier.weight(.2f))
+                DataCaptureCountValue(mCaptureCount, modifier.weight(0.2f))
                 Spacer(modifier.weight(0.1f))
-                CaptureRateTitle(modifier.weight(0.2f))
-                CaptureRateValue(mCaptureRateHz, modifier.weight(0.2f))
+                DataCaptureRateTitle(modifier.weight(0.2f))
+                DataCaptureRateValue(mCaptureRateHz, modifier.weight(0.2f))
                 Spacer(modifier = modifier.weight(0.05f))
             }
 
             Row(modifier = modifier.weight(0.1f)) {
                 Spacer(modifier = modifier.weight(0.05f))
-                CaptureDurationTitle(modifier.weight(0.15f))
-                CaptureDurationValue(modifier.weight(0.25f), mDurationSec)
+                DataCaptureDurationTitle(modifier.weight(0.15f))
+                DataCaptureDurationValue(modifier.weight(0.25f), mDurationSec)
                 Spacer(modifier = modifier.weight(0.55f))
             }
 
-            Row(modifier = modifier.weight(0.3f).align(Alignment.CenterHorizontally)) {
+            Row(modifier = modifier
+                .weight(0.3f)
+                .align(Alignment.CenterHorizontally)) {
                 Spacer(modifier = modifier.weight(0.1f))
-                ActionButton(
+                DataCaptureActionButton(
                     viewModel,
-                    analyseViewModel,
+                    mCaptureDBViewModel,
                     navController,
                     mSensorManager,
                     mSensorEventListener,
@@ -98,15 +96,17 @@ fun DataCaptureScreen(
 
             Spacer(modifier = modifier.weight(0.04f))
 
-            Row(modifier = modifier.weight(0.1f).align(Alignment.CenterHorizontally)) {
-               CancelButton(
-                   viewModel,
-                   mSensorManager,
-                   mSensorEventListener,
-                   navController,
-                   secondaryButtonColor,
-                   modifier = modifier
-               )
+            Row(modifier = modifier
+                .weight(0.1f)
+                .align(Alignment.CenterHorizontally)) {
+                DataCaptureCancelButton(
+                    viewModel,
+                    mSensorManager,
+                    mSensorEventListener,
+                    navController,
+                    secondaryButtonColor,
+                    modifier = modifier
+                )
             }
 
             Spacer(modifier = modifier.weight(0.1f))

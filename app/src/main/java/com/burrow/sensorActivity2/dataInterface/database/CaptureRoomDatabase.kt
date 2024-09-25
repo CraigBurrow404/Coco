@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 @Database(entities =
     [CaptureEntity::class],
-    version = 11,
+    version = 15,
     exportSchema = false)
 abstract class CaptureRoomDatabase : RoomDatabase() {
 
@@ -32,6 +32,7 @@ abstract class CaptureRoomDatabase : RoomDatabase() {
                 )
                     .addCallback(CaptureDatabaseCallback(scope))
                     .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 instance
@@ -52,7 +53,7 @@ abstract class CaptureRoomDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(captureDao: CaptureDao) {
-            captureDao.deleteAll()
+           // captureDao.deleteAll()
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.selectedSensors
+package com.burrow.sensorActivity2.ui.chooseSensors
 
 import android.hardware.Sensor
 import androidx.lifecycle.ViewModel

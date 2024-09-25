@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CaptureCountTitle( modifier: Modifier ) {
+fun DataCaptureCountTitle(modifier: Modifier ) {
     Box( modifier = modifier ) {
         Text(
             modifier = modifier,

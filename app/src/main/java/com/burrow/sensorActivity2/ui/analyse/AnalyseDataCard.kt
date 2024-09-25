@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -20,9 +19,12 @@ import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
 @Composable
 fun AnalyseDataCard(
     onClick: () -> Unit,
+    batchId: Int,
+    firstCapture: String,
     xValue: Float,
     yValue: Float,
-    zValue: Float,) {
+    zValue: Float
+) {
 
     val tertiaryButtonColor = setTertiaryButtonColor()
 
@@ -42,13 +44,24 @@ fun AnalyseDataCard(
             shape = RoundedCornerShape(4.dp),
             colors = tertiaryButtonColor,
         ) {
-            Text(
-                modifier = Modifier.fillMaxSize()
-                    .align(Alignment.CenterVertically),
-                text = "x: $xValue y: $yValue z: $zValue",
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-            )
+            Row() {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.2f),
+                    text = "# : $batchId",
+                    textAlign = TextAlign.Center,
+                    fontSize = 32.sp,
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.8f),
+                    text = "When : $firstCapture",
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp,
+                )
+            }
         }
         Spacer(modifier = Modifier.weight(0.1f))
     }

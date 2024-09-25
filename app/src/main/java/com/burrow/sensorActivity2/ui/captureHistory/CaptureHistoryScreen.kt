@@ -1,6 +1,5 @@
-package com.burrow.sensorActivity2.ui.chooseDataToAnalyse
+package com.burrow.sensorActivity2.ui.captureHistory
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,25 +19,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
-import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
+import java.sql.Timestamp
 
 @Composable
-fun ChooseAnalyseScreen(
-    viewModel: com.burrow.sensorActivity2.ui.chooseDataToAnalyse.ChooseAnalyseViewModel,
+fun CaptureHistoryScreen(
+    viewModel: CaptureHistoryViewModel,
     navController: NavController,
     modifier: Modifier,
-    analyseViewModel: AnalyseViewModel,
     captureDBViewModel: CaptureDBViewModel
 ) {
 
-// TODO the UIs sole responsibility should be to consume and display UI state.
-
-    val tag = "ChooseDataToAnalyseScreen"
-    Log.v(tag, "Started")
     val secondaryButtonColor = setSecondaryButtonColor()
-    val mCaptureSummaryList by captureDBViewModel.getCaptureSummaryList().collectAsState(initial = emptyList())
+    val mCaptureList by captureDBViewModel.getCaptureList().collectAsState(initial = emptyList())
 
     Column {
 
@@ -49,14 +43,16 @@ fun ChooseAnalyseScreen(
                 .fillMaxWidth()
                 .weight(0.68f)
         ) {
-            items(mCaptureSummaryList.size)
-            { Index ->
-                AnalyseCard(
+            items(mCaptureList.size)
+            { index ->
+                CaptureHistoryCard(
                     viewModel = viewModel,
                     modifier = modifier,
                     onClick = {
-                        viewModel.updateBatchId(mCaptureSummaryList[Index].batchId)
-                        Log.v(tag,"uniqueId ${mCaptureSummaryList[Index].batchId}")
+                        viewModel.updateBatchId(
+                            mCaptureList[index].batchId,
+                            Timestamp(mCaptureList[index].firstCapture).toString()
+                        )
                         navController.navigate(route = SensorAppEnum.AnalyseDataScreen.name)
                     }
                 )

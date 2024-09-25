@@ -1,4 +1,4 @@
-package com.burrow.sensorActivity2.ui.selectedSensors
+package com.burrow.sensorActivity2.ui.chooseSensors
 
 import android.hardware.Sensor
 import android.util.Log
@@ -23,8 +23,6 @@ import com.burrow.sensorActivity2.ui.common.setPrimaryButtonColor
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
-
-// TODO the UIs sole responsibility should be to consume and display UI state.
 
 @Composable
 fun ChooseSensorScreen(
@@ -60,15 +58,6 @@ fun ChooseSensorScreen(
                        dataCaptureViewModel.setSelectedSensor(
                            mSelectedSensorType = sensor.type,
                            mSelectedSensorStringType = sensor.stringType
-                           // TODO
-                           //Button changes colour + adds Selected WRONG...
-                           //The color should be maintained as part of the UI state and the
-                           // viewModel called to update the UI State when the button is clicked
-                           //As a result, you should never modify the UI state in the UI directly
-                       // unless the UI itself is the sole source of its data. Violating this
-                       // principle results in multiple sources of truth for the
-                       // same piece of information, leading to data inconsistencies and subtle bugs.
-                           // UI State is immutable in the UI Layer
                        )
                    }
                )
