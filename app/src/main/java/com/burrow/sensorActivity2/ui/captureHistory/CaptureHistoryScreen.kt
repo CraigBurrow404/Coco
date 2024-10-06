@@ -1,5 +1,6 @@
 package com.burrow.sensorActivity2.ui.captureHistory
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
+import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
+import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 import java.sql.Timestamp
@@ -28,11 +31,13 @@ fun CaptureHistoryScreen(
     viewModel: CaptureHistoryViewModel,
     navController: NavController,
     modifier: Modifier,
-    captureDBViewModel: CaptureDBViewModel
+    captureDBViewModel: CaptureDBViewModel,
+    analyseViewModel: AnalyseViewModel
 ) {
 
     val secondaryButtonColor = setSecondaryButtonColor()
-    val mCaptureList by captureDBViewModel.getCaptureList().collectAsState(initial = emptyList())
+    val mCaptureList: List<CaptureEntity>
+            by captureDBViewModel.getBatchList().collectAsState(initial = emptyList())
 
     Column {
 
@@ -47,45 +52,58 @@ fun CaptureHistoryScreen(
             { index ->
                 CaptureHistoryCard(
                     viewModel = viewModel,
+                    batchId = mCaptureList[index].batchId,
+                    firstCapture = Timestamp(mCaptureList[index].firstCapture)
+                        .toString().substring(startIndex = 0, endIndex = 19),
                     modifier = modifier,
                     onClick = {
                         viewModel.updateBatchId(
                             mCaptureList[index].batchId,
                             Timestamp(mCaptureList[index].firstCapture).toString()
                         )
+                        analyseViewModel.setBatchId(mCaptureList[index].batchId)
+                        Log.v(
+                            "CaptureHistoryScreen", "Index : $index, BatchId :" +
+                                    "${mCaptureList[index].batchId}"
+                        )
                         navController.navigate(route = SensorAppEnum.AnalyseDataScreen.name)
                     }
                 )
             }
         }
+        Row(Modifier.weight(0.1f)) {
+            Spacer(Modifier.weight(0.1f))
 
-       Spacer(Modifier.weight(0.02f))
+            Spacer(Modifier.weight(0.1f))
+        }
 
-       Row(Modifier.weight(0.1f)) {
-           Spacer(Modifier.weight(0.1f))
-           Column (
-               Modifier
-                   .fillMaxSize()
-                   .weight(0.8f)
-           ) {
-               Button(
-                   shape = RoundedCornerShape(4.dp),
-                   modifier = Modifier
-                       .fillMaxSize(),
-                   onClick = {
-                       navController.navigate(route = SensorAppEnum.HomeScreen.name)
-                   },
-                   colors = secondaryButtonColor
-               ) {
-                   Text(
-                       fontSize = 32.sp,
-                       text = stringResource(R.string.cancel)
-                   )
-               }
-           }
-           Spacer(Modifier.weight(0.1f))
-       }
+        Spacer(Modifier.weight(0.02f))
 
-       Spacer(Modifier.weight(0.1f))
-   }
+        Row(Modifier.weight(0.1f)) {
+            Spacer(Modifier.weight(0.1f))
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .weight(0.8f)
+            ) {
+                Button(
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onClick = {
+                        navController.navigate(route = SensorAppEnum.HomeScreen.name)
+                    },
+                    colors = secondaryButtonColor
+                ) {
+                    Text(
+                        fontSize = 32.sp,
+                        text = stringResource(R.string.cancel)
+                    )
+                }
+            }
+            Spacer(Modifier.weight(0.1f))
+        }
+
+        Spacer(Modifier.weight(0.1f))
+    }
 }

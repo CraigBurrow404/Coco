@@ -1,7 +1,7 @@
 package com.burrow.sensorActivity2.dataInterface.database
 
 data class CaptureData(
-    val batchId : Int,
+    val batchId : Long,
     val firstCapture : Long,
     val timestamp: Long,
     val sensorName: String,

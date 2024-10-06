@@ -74,7 +74,7 @@ class DataCaptureViewModel : ViewModel() {
             val mSensorName: String = event?.sensor?.stringType!!
             val mSensorType: Int? = event.sensor?.type
             val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
-            val mBatchId: Int = uiState.value.batchId
+            val mBatchId: Long = uiState.value.batchId
             var mCaptureCount = uiState.value.captureCount
             val mSensorTimestamp = System.currentTimeMillis()
             val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
@@ -150,8 +150,8 @@ class DataCaptureViewModel : ViewModel() {
     }
 
 
-    private fun checkIfSaveFirstCaptureTimestamp(batchId: Int, timestamp: Long) {
-        if (uiState.value.batchId == 0) {
+    private fun checkIfSaveFirstCaptureTimestamp(batchId: Long, timestamp: Long) {
+        if (uiState.value.batchId == 0L) {
             _uiState.update { currentState ->
                 currentState.copy(
                     batchId = batchId,
@@ -167,7 +167,6 @@ class DataCaptureViewModel : ViewModel() {
         mCaptureDBViewModel: CaptureDBViewModel
     ) {
         val mBatchId = mCaptureDBViewModel.getNewBatchId()
-        Log.v("BatchId", "$mBatchId")
         registerSensorListener(
             mSensorManager,
             mSensorEventListener
@@ -286,7 +285,7 @@ class DataCaptureViewModel : ViewModel() {
                     mSensorManager,
                     mSensorEventListener
                 )
-                mAnalyseUIState.uniqueId = uiState.value.uniqueId
+                mAnalyseUIState.batchId = uiState.value.uniqueId
                 mAnalyseUIState.sensorName = uiState.value.sensorName
                 mAnalyseUIState.captureCount = uiState.value.captureCount
                 mDataCaptureButtonText = "Analyse Data"

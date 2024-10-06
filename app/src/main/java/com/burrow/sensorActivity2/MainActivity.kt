@@ -19,11 +19,11 @@ import com.burrow.sensorActivity2.dataInterface.database.SelectSensorViewModelFa
 import com.burrow.sensorActivity2.dataInterface.database.SensorDBViewModel
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.captureHistory.CaptureHistoryViewModel
+import com.burrow.sensorActivity2.ui.chooseSensors.ChooseSensorViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
 import com.burrow.sensorActivity2.ui.home.HomeViewModel
 import com.burrow.sensorActivity2.ui.info.InfoViewModel
 import com.burrow.sensorActivity2.ui.selectData.SelectDataViewModel
-import com.burrow.sensorActivity2.ui.chooseSensors.ChooseSensorViewModel
 import com.burrow.sensorActivity2.ui.sensorApp.SensorApp
 import com.burrow.sensorActivity2.ui.sensorDetails.SensorDetailsViewModel
 import com.burrow.sensorActivity2.ui.theme.SensorAppTheme
@@ -67,7 +67,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mSensorDetailsViewModel = ViewModelProvider(this)[SensorDetailsViewModel::class]
         mInfoViewModel = ViewModelProvider(this)[InfoViewModel::class]
         mCaptureHistoryViewModel = ViewModelProvider(this)[CaptureHistoryViewModel::class]
+        val mFilePath = this.filesDir.path
+
         val mAnalyseViewModel: AnalyseViewModel by viewModels { AnalyseViewModel.Factory }
+        val context : Context = this
 
         //Grab the list of Available Sensors and insert it onto select_sensor_table
         val mSensorList = insertSensorList()
@@ -86,10 +89,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     mCaptureHistoryViewModel,
                     mSensorManager,
                     mSensorEventListener,
-                    mSensorList
+                    mSensorList,
+                    mFilePath,
+                    context
                 )
             }
         }
+        val filesDir = filesDir
+        Log.v("MainActivity", filesDir.toString())
 
     }
 
@@ -132,6 +139,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             }
             index++
         }
+
         return preferredSensorList
     }
+
+
+
 }

@@ -1,29 +1,35 @@
 package com.burrow.sensorActivity2.dataInterface.database
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.room.Delete
 import kotlinx.coroutines.flow.Flow
 
-// Declares the DAO as a private property in the constructor. Pass in the DAO
-// instead of the whole database, because you only need access to the DAO
-
 class CaptureRepository (private val captureDao: CaptureDao) {
 
     @WorkerThread
-    fun getCaptureData(batchId: Long): Flow<List<CaptureEntity>> {
-        val captureList: Flow<List<CaptureEntity>> = captureDao.getCaptureData(batchId)
+    fun getCaptureData(mBatchId: Long): Flow<List<CaptureEntity>> {
+        val captureList: Flow<List<CaptureEntity>> = captureDao.getDataList(mBatchId)
+        Log.v("CaptureRepository","batchId : $mBatchId captureList size : " +
+                "${captureList.toString()}")
         return captureList
     }
 
     @WorkerThread
-    fun getCaptureList(): Flow<List<CaptureEntity>> {
-        val captureList: Flow<List<CaptureEntity>> = captureDao.getCaptureList()
-        return captureList
+    fun getBatchList(): Flow<List<CaptureEntity>> {
+        val batchList: Flow<List<CaptureEntity>> = captureDao.getBatchList()
+        return batchList
     }
 
     @WorkerThread
-    fun getNewBatchId(): Int {
-        val newBatchId: Int = captureDao.getNewBatchId()
+    fun getDataList(mBatchId : Long): Flow<List<CaptureEntity>> {
+        val dataList: Flow<List<CaptureEntity>> = captureDao.getDataList(mBatchId)
+        return dataList
+    }
+
+    @WorkerThread
+    fun getNewBatchId(): Long {
+        val newBatchId: Long = captureDao.getNewBatchId()
         return newBatchId
     }
 

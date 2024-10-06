@@ -2,6 +2,7 @@ package com.burrow.sensorActivity2.ui.sensorApp
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
@@ -17,7 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
-import com.burrow.sensorActivity2.ui.analyse.AnalyseScreen
+import com.burrow.sensorActivity2.ui.analyse.AnalyseDataScreen
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureScreen
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
@@ -42,7 +43,9 @@ fun SensorApp(
     captureHistoryViewModel: CaptureHistoryViewModel = viewModel(),
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
-    mSensorList: MutableList<Sensor>
+    mSensorList: MutableList<Sensor>,
+    mFilePath : String,
+    context : Context
 ) {
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -96,9 +99,12 @@ fun SensorApp(
                 )
             }
             composable(route = SensorAppEnum.AnalyseDataScreen.name) {
-                AnalyseScreen(
+                AnalyseDataScreen(
                     viewModel = analyseViewModel,
-                    navController = navController
+                    mCaptureDBViewModel = mCaptureDBViewModel,
+                    navController = navController,
+                    mFilePath = mFilePath,
+                    context = context
                 )
             }
             composable(route = SensorAppEnum.SensorDetailsScreen.name
@@ -117,6 +123,7 @@ fun SensorApp(
                     viewModel = captureHistoryViewModel,
                     navController = navController,
                     captureDBViewModel = mCaptureDBViewModel,
+                    analyseViewModel = analyseViewModel,
                     modifier = Modifier
                 )
             }

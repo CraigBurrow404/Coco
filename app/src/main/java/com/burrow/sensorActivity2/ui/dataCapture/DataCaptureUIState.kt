@@ -1,7 +1,7 @@
 package com.burrow.sensorActivity2.ui.dataCapture
 
 data class DataCaptureUiState(
-    val batchId: Int = 0,
+    val batchId: Long = 0,
     val firstCapture: Long = 0,
     val sensorName: String = "",
     val duration: Double = 0.0,

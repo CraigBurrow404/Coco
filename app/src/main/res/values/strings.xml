@@ -62,6 +62,7 @@
     <string name="preselected_sensors">Preselected Sensors</string>
     <string name="preferred_sensors">Preferred Sensors</string>
     <string name="capture_history">Capture History</string>
+    <string name="share">Share Capture</string>
 
     <plurals name="sensors">
         <item quantity="one">%d sensor</item>

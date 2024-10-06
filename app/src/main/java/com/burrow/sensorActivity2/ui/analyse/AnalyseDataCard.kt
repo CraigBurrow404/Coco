@@ -19,11 +19,8 @@ import com.burrow.sensorActivity2.ui.common.setTertiaryButtonColor
 @Composable
 fun AnalyseDataCard(
     onClick: () -> Unit,
-    batchId: Int,
-    firstCapture: String,
-    xValue: Float,
-    yValue: Float,
-    zValue: Float
+    batchId: Long,
+    firstCapture: String
 ) {
 
     val tertiaryButtonColor = setTertiaryButtonColor()
@@ -49,7 +46,7 @@ fun AnalyseDataCard(
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(0.2f),
-                    text = "# : $batchId",
+                    text = batchId.toString(),
                     textAlign = TextAlign.Center,
                     fontSize = 32.sp,
                 )
@@ -57,7 +54,7 @@ fun AnalyseDataCard(
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(0.8f),
-                    text = "When : $firstCapture",
+                    text = firstCapture,
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                 )

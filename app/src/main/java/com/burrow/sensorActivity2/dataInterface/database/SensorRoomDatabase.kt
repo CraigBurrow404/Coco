@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 @Database(entities =
     [SensorEntity::class],
-    version = 15,
+    version = 16,
     exportSchema = false)
 abstract class SensorRoomDatabase : RoomDatabase() {
 

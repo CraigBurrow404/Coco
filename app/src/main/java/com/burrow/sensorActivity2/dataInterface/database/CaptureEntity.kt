@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "data_capture_table")
 data class CaptureEntity(
     @PrimaryKey (autoGenerate = true) val uid : Int,
-    val batchId : Int,
+    val batchId : Long,
     val firstCapture : Long,
     val timestamp: Long,
     val sensorName: String,

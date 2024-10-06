@@ -1,7 +1,6 @@
 package com.burrow.sensorActivity2.dataInterface.database
 
 import androidx.room.Dao
-import androidx.room.Ignore
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,8 +16,20 @@ interface CaptureDao {
     @Query("DELETE FROM data_capture_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM data_capture_table WHERE batchId = :batchId")
-    fun getCaptureData(batchId : Long): Flow<List<CaptureEntity>>
+    @Query("SELECT uid," +
+                "batchId," +
+                "firstCapture," +
+                "timestamp," +
+                "sensorName," +
+                "duration," +
+                "sensitivity," +
+                "captureCount," +
+                "captureValueX," +
+                "captureValueY," +
+                "captureValueZ " +
+                "FROM data_capture_table " +
+                "WHERE batchId = :mBatchId")
+    fun getDataList(mBatchId : Long): Flow<List<CaptureEntity>>
 
     @Query("SELECT DISTINCT 0 as uid," +
             "batchId," +
@@ -32,9 +43,9 @@ interface CaptureDao {
             "0.0 as captureValueY," +
             "0.0 as captureValueZ" +
             " FROM data_capture_table")
-    fun getCaptureList(): Flow<List<CaptureEntity>>
+    fun getBatchList(): Flow<List<CaptureEntity>>
 
     @Query("Select Max(batchId)  + 1 from data_capture_table")
-    fun getNewBatchId(): Int
+    fun getNewBatchId(): Long
 
 }
