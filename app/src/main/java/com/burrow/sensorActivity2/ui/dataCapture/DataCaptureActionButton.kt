@@ -29,6 +29,7 @@ import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 fun DataCaptureActionButton(
     viewModel : DataCaptureViewModel,
     mCaptureDBViewModel: CaptureDBViewModel,
+    mAnalyseViewModel: AnalyseViewModel,
     navController: NavController,
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
@@ -43,6 +44,7 @@ fun DataCaptureActionButton(
                 viewModel.handleButtonClick(
                     viewModel,
                     mCaptureDBViewModel,
+                    mAnalyseViewModel,
                     navController,
                     mSensorManager,
                     mSensorEventListener

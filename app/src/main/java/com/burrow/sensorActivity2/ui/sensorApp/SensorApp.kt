@@ -37,7 +37,7 @@ import com.burrow.sensorActivity2.ui.sensorDetails.SensorDetailsViewModel
 fun SensorApp(
     dataCaptureViewModel: DataCaptureViewModel = viewModel(),
     selectSensorViewModel: ChooseSensorViewModel = viewModel(),
-    analyseViewModel: AnalyseViewModel = viewModel(),
+    mAnalyseViewModel: AnalyseViewModel = viewModel(),
     mCaptureDBViewModel : CaptureDBViewModel = viewModel(),
     sensorDetailsViewModel: SensorDetailsViewModel = viewModel(),
     captureHistoryViewModel: CaptureHistoryViewModel = viewModel(),
@@ -52,7 +52,7 @@ fun SensorApp(
     val currentScreen = SensorAppEnum.valueOf(
         backStackEntry?.destination?.route ?: SensorAppEnum.HomeScreen.name
     )
-    val activity = (LocalContext.current as? Activity)
+    val activity = (context as? Activity)
 
     Scaffold(
         topBar = {
@@ -93,6 +93,7 @@ fun SensorApp(
                     viewModel = dataCaptureViewModel,
                     navController = navController,
                     mCaptureDBViewModel = mCaptureDBViewModel,
+                    mAnalyseViewModel = mAnalyseViewModel,
                     mSensorManager = mSensorManager,
                     mSensorEventListener = mSensorEventListener,
                     modifier = Modifier
@@ -100,7 +101,7 @@ fun SensorApp(
             }
             composable(route = SensorAppEnum.AnalyseDataScreen.name) {
                 AnalyseDataScreen(
-                    viewModel = analyseViewModel,
+                    viewModel = mAnalyseViewModel,
                     mCaptureDBViewModel = mCaptureDBViewModel,
                     navController = navController,
                     mFilePath = mFilePath,
@@ -123,7 +124,7 @@ fun SensorApp(
                     viewModel = captureHistoryViewModel,
                     navController = navController,
                     captureDBViewModel = mCaptureDBViewModel,
-                    analyseViewModel = analyseViewModel,
+                    analyseViewModel = mAnalyseViewModel,
                     modifier = Modifier
                 )
             }

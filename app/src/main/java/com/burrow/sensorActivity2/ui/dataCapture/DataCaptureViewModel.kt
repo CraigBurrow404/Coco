@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
 import com.burrow.sensorActivity2.dataInterface.database.CaptureData
 import com.burrow.sensorActivity2.ui.analyse.AnalyseUIState
+import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.common.getSensorTypeName
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,6 +76,7 @@ class DataCaptureViewModel : ViewModel() {
             val mSensorType: Int? = event.sensor?.type
             val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
             val mBatchId: Long = uiState.value.batchId
+            Log.v("sensorChanged","mBatchId : $mBatchId")
             var mCaptureCount = uiState.value.captureCount
             val mSensorTimestamp = System.currentTimeMillis()
             val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
@@ -167,6 +169,7 @@ class DataCaptureViewModel : ViewModel() {
         mCaptureDBViewModel: CaptureDBViewModel
     ) {
         val mBatchId = mCaptureDBViewModel.getNewBatchId()
+        Log.v("StartCapture","mBatchId : $mBatchId")
         registerSensorListener(
             mSensorManager,
             mSensorEventListener
@@ -261,13 +264,12 @@ class DataCaptureViewModel : ViewModel() {
     fun handleButtonClick(
         viewModel: DataCaptureViewModel,
         mCaptureDBViewModel :CaptureDBViewModel,
+        mAnalyseViewModel : AnalyseViewModel,
         navController: NavController,
         mSensorManager: SensorManager,
         mSensorEventListener: SensorEventListener
     ) {
         var mDataCaptureButtonText = uiState.value.dataCaptureButtonText
-        val mAnalyseUIState = AnalyseUIState(0, "", 0)
-
         when (mDataCaptureButtonText) {
 
             "Start" -> {
@@ -285,13 +287,11 @@ class DataCaptureViewModel : ViewModel() {
                     mSensorManager,
                     mSensorEventListener
                 )
-                mAnalyseUIState.batchId = uiState.value.uniqueId
-                mAnalyseUIState.sensorName = uiState.value.sensorName
-                mAnalyseUIState.captureCount = uiState.value.captureCount
                 mDataCaptureButtonText = "Analyse Data"
             }
 
             "Analyse Data" -> {
+                mAnalyseViewModel.setBatchId(uiState.value.batchId)
                 navController.navigate(
                     route = SensorAppEnum.AnalyseDataScreen.name
                 ) {

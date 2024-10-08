@@ -26,6 +26,7 @@ import java.util.Locale
 fun DataCaptureScreen(
     viewModel: DataCaptureViewModel,
     mCaptureDBViewModel: CaptureDBViewModel,
+    mAnalyseViewModel: AnalyseViewModel,
     navController: NavController,
     mSensorManager: SensorManager,
     mSensorEventListener: SensorEventListener,
@@ -84,6 +85,7 @@ fun DataCaptureScreen(
                 DataCaptureActionButton(
                     viewModel,
                     mCaptureDBViewModel,
+                    mAnalyseViewModel,
                     navController,
                     mSensorManager,
                     mSensorEventListener,

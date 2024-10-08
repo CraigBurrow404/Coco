@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         mCaptureHistoryViewModel = ViewModelProvider(this)[CaptureHistoryViewModel::class]
         val mFilePath = this.filesDir.path
 
-        val mAnalyseViewModel: AnalyseViewModel by viewModels { AnalyseViewModel.Factory }
+        val mAnalyseViewModel : AnalyseViewModel by viewModels { AnalyseViewModel.Factory }
         val context : Context = this
 
         //Grab the list of Available Sensors and insert it onto select_sensor_table
