@@ -10,7 +10,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,7 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
-import com.burrow.sensorActivity2.ui.analyse.AnalyseDataScreen
+import com.burrow.sensorActivity2.ui.analyse.AnalyseScreen
 import com.burrow.sensorActivity2.ui.analyse.AnalyseViewModel
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureScreen
 import com.burrow.sensorActivity2.ui.dataCapture.DataCaptureViewModel
@@ -100,9 +99,8 @@ fun SensorApp(
                 )
             }
             composable(route = SensorAppEnum.AnalyseDataScreen.name) {
-                AnalyseDataScreen(
+                AnalyseScreen(
                     viewModel = mAnalyseViewModel,
-                    mCaptureDBViewModel = mCaptureDBViewModel,
                     navController = navController,
                     mFilePath = mFilePath,
                     context = context

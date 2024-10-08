@@ -15,8 +15,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,17 +26,14 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.burrow.sensorActivity2.R
-import com.burrow.sensorActivity2.dataInterface.database.CaptureDBViewModel
-import com.burrow.sensorActivity2.dataInterface.database.CaptureEntity
 import com.burrow.sensorActivity2.ui.common.setSecondaryButtonColor
 import com.burrow.sensorActivity2.ui.sensorApp.SensorAppEnum
 import java.net.URI
 
 @Composable
-fun AnalyseDataScreen(
+fun AnalyseScreen(
     modifier: Modifier = Modifier,
     viewModel: AnalyseViewModel,
-    mCaptureDBViewModel: CaptureDBViewModel,
     navController: NavController,
     mFilePath: String,
     context: Context
@@ -70,23 +65,23 @@ fun AnalyseDataScreen(
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
-/*            LazyColumn(
-                Modifier
-                    .fillMaxSize()
-            ) {
-                itemsIndexed(captureList.value)
-                { _, row ->
-                    val captureEntity: CaptureEntity = row
+            /*            LazyColumn(
+                            Modifier
+                                .fillMaxSize()
+                        ) {
+                            itemsIndexed(captureList.value)
+                            { _, row ->
+                                val captureEntity: CaptureEntity = row
 
-                    AnalyseDataCard(
-                        onClick = {},
-                        batchId = captureEntity.batchId,
-                        firstCapture = Timestamp(captureEntity.firstCapture)
-                            .toString().substring(startIndex = 0, endIndex = 19)
-                    )
-                }
-            }
-  */
+                                AnalyseDataCard(
+                                    onClick = {},
+                                    batchId = captureEntity.batchId,
+                                    firstCapture = Timestamp(captureEntity.firstCapture)
+                                        .toString().substring(startIndex = 0, endIndex = 19)
+                                )
+                            }
+                        }
+              */
             // TODO Add more Analysis features as they become apparent
             //  XAxisGraph(modifier.weight(0.3f))
         }
@@ -103,18 +98,24 @@ fun AnalyseDataScreen(
                         .fillMaxSize(),
                     onClick = {
                         Log.v(
-                            "Analyse Screen", "Batch IdZ ${viewModel.mCaptureList!![firstRowInList].batchId}" +
+                            "Analyse Screen",
+                            "Batch IdZ ${viewModel.mCaptureList!![firstRowInList].batchId}" +
                                     " CaptureList.size : ${viewModel.mCaptureList!!.size}"
                         )
                         val fileURI: URI =
-                            createCSV(viewModel.mCaptureList!![firstRowInList].batchId, viewModel.mCaptureList!!, mFilePath)
-                        val fileUri: Uri = Uri.parse(fileURI.toString()
+                            createCSV(
+                                viewModel.mCaptureList!![firstRowInList].batchId,
+                                viewModel.mCaptureList!!,
+                                mFilePath
+                            )
+                        val fileUri: Uri = Uri.parse(
+                            fileURI.toString()
                         )
                         Log.v(
                             "AnalyseDataScreen", "fileURI : $fileURI" +
                                     "fileUri : $fileUri"
                         )
-                        viewModel.shareDataFile(context, mBatchId, viewModel.mCaptureList!! )
+                        viewModel.shareDataFile(context, mBatchId, viewModel.mCaptureList!!)
                     },
                     colors = secondaryButtonColor
                 ) {

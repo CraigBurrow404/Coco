@@ -76,7 +76,6 @@ class DataCaptureViewModel : ViewModel() {
             val mSensorType: Int? = event.sensor?.type
             val mSensorListenerRegistered: Boolean = uiState.value.mSensorListenerRegistered
             val mBatchId: Long = uiState.value.batchId
-            Log.v("sensorChanged","mBatchId : $mBatchId")
             var mCaptureCount = uiState.value.captureCount
             val mSensorTimestamp = System.currentTimeMillis()
             val mDurationLong: Long = (mSensorTimestamp - mFirstCapture)
